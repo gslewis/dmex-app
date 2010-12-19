@@ -14,8 +14,7 @@ function() {
 
             } else if (!this.checked) {
                 // If any value cb is deselected, deselect the "All" cb.
-                $(".CheckboxMultiNumberSelection input[name='" + this.name
-                    + ".all']").attr("checked", false);
+                $(".CheckboxMultiNumberSelection input[name='" + this.name + ".all']").attr("checked", false);
 
             } else {
                 // If all value cbs are selected, select the "All" cb.
@@ -29,8 +28,7 @@ function() {
                     });
 
                 if (allSelected) {
-                    $(".CheckboxMultiNumberSelection input[name='" + this.name
-                        + ".all']").attr("checked", true);
+                    $(".CheckboxMultiNumberSelection input[name='" + this.name + ".all']").attr("checked", true);
                 }
             }
         });
