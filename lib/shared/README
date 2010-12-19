@@ -1,0 +1,15 @@
+Place compile-time jars used by all webapps here or set the "api.jars"
+property in your build.properties file.  The required jars are:
+
+    el-api.jar
+    jsp-api.jar
+    servlet-api.jar
+
+These can be obtained from:
+
+    1). GAE SDK lib/shared/ directory
+    2). Tomcat lib/ directory
+    3). Jetty lib/ directory (servlet-api.jar and jsp-2.1/jsp-api-2.1.jar,
+        which includes the EL API)
+
+These jars are _not_ packaged in the war.

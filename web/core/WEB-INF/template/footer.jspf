@@ -1,0 +1,31 @@
+<%-- vim:set ft=jsp: --%>
+<%@ page contentType="text/html;charset=UTF-8" isELIgnored="false" %>
+
+<c:set var="root">
+    <c:choose>
+        <c:when test="${empty pageContext.servletContext.contextPath}">/</c:when>
+        <c:otherwise>${pageContext.servletContext.contextPath}</c:otherwise>
+    </c:choose>
+</c:set>
+
+<c:url var="homeUrl" value="/"/>
+<c:url var="aboutUrl" value="/info/about">
+    <c:param name="back" value="${pageContext.request.requestURI}"/>
+</c:url>
+
+<div id="footer">
+    <hr/>
+
+    <div id="footerLinks">
+        <a href="${homeUrl}">home</a> |
+        <a href="${aboutUrl}">about</a>
+    </div>
+
+    <%-- This template is copied with filtering to set the version and build
+    values. --%>
+    <div id="footerInfo">
+        <span class="version">Version: @version@</span> <span class="build">[@build@]</span>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,125 @@
+Daisymaths Exercises Web Applications
+=====================================
+
+This project comprises a number of web applications for presenting the
+Daisymaths Exercises.  The webapps are:
+
+    form - presents a problem in an HTML webform
+    pdf  - generates PDF work and answer sheets for download
+    gae  - a Google AppEngine version of the 'form' webapp
+
+This project requires the Daisymaths Exercises library:
+
+    https://github.com/gslewis/dmex
+
+Building
+--------
+Requires Java 1.6.  The webapps are built using Apache Ant (tested with
+Ant 1.8.1).  Use 'ant -projecthelp' to see a list of available targets.
+
+The main targets are:
+
+    ant compile - builds the webapps and packages as war (if necessary)
+    ant run     - runs the webapp locally (using Jetty or GAE dev_appserver)
+    ant deploy  - deploys the webapp to a web container (currently GAE only)
+
+Local build settings can be provided using a build.properties file in the base
+directory.  You can copy conf/build.properties-sample and modify as
+appropriate for your own usage.
+
+At the moment DMEX webapps expects the DMEX library source to be located in
+${dmex.dir} which defaults to "../dmex".  Use an alternate location by
+setting "dmex.dir" in your build.properties file.  Furthermore, the DMEX
+library needs to be configured for building (see ${dmex.dir}/README for
+instructions).
+
+By default all webapps are built.  To only build specific webapps, set the
+${app.includes} property in your build.properties file.
+
+The webapps are built in build/<webapp_id> and the wars are created in the
+dist/ directory (no war created for GAE webapp).
+
+Jar dependencies
+----------------
+The jar dependencies for each webapp, plus run-time (packaged) and
+compile-time (non-packaged) jars, are listed in lib/*/README.  You may either
+copy the required jars to the corresponding lib/ directory or set the
+corresponding classpath property in your build.properties file.
+
+Compile-time (see lib/shared/README, build property "api.jars")
+
+    servlet-api.jar
+    jsp-api.jar
+    el-api.jar
+
+Run-time (see lib/runtime/README, build property "runtime.jars")
+
+    jstl.jar
+    standard.jar
+
+GAE-only (see lib/gae/README, build property "gae.jars")
+
+    xalan.jar
+    serializer.jar
+
+Note: for the 'pdf' webapp, all jar dependencies are handled via the DMEX PDF
+module using the ${dmex.dir}/src/pdf/build-module.xml '-installjars' target.
+
+
+Jetty
+-----
+If you wish to run the 'form' and 'pdf' webapps locally using 'ant run', you
+need to either:
+
+    - set the ${jetty.lib.dir} property to the location of a Jetty-6 install
+    - copy the required Jetty jars to lib/jetty
+    - or set the ${jetty.jars} property in build.properties
+
+or any mixture of the three.  See lib/jetty/README for the list of jars.
+
+Note that we also require the jetty-ant.jar which isn't part of the Jetty
+install.  You can either:
+
+    - copy jetty-ant.jar to ${jetty.lib.dir}/ext/
+    - put jetty-ant.jar in the lib/jetty directory
+    - or include the path to jetty-ant.jar in the ${jetty.jars} property
+
+
+Google AppEngine
+----------------
+For GAE, you will need to set the ${appengine.sdk} property in your
+build.properties file to point to your local copy of the GAE SDK.
+
+Note: DMEX makes use of XSLT.  The XSL Transformer provided by GAE does not
+work with the DMEX stylesheets so we must include Xalan in the GAE war.
+
+
+Run/Deploy
+==========
+The build.xml file includes 'run' and 'deploy' targets.  These require the
+${app.run} property to be set to one of 'form', 'pdf' or 'gae' ('form' is the
+default).  The 'run' target will run the webapp locally and the 'deploy'
+target will attempt to deploy the webapp's war to a web container.
+
+To specify the webapp to run/deploy, either set the ${app.run} property in
+your build.properties file or run Ant using:
+
+    ant -Dapp.run=pdf run
+
+
+Deploy to Google AppEngine
+--------------------------
+Currently only the GAE webapp is able to be deployed using:
+
+    ant -Dapp.run=gae deploy
+
+The GAE deploy target will prompt you for the application id and version.  The
+following properties can be set in your build.properties file to override the
+defaults:
+
+    dmex.gae.app.id.default - the default application id [daisymaths-exercises]
+    dmex.gae.app.version.options - the possible version values [prod,test]
+    dmex.gae.app.version.default - the default version [test]
+
+
+Geoff Lewis <gsl@gslsrc.net>

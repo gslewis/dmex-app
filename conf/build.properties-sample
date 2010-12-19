@@ -1,0 +1,99 @@
+# User-specific build settings.  Copy this file to ${basedir}/build.properties
+# and modify as appropriate.
+#
+# Note that the "dmex.app.version" property is set in ${basedir}/VERSION.
+# If you set ${dmex.app.version} here, it will override the VERSION value.
+
+# List of webapps to compile.
+#app.includes = form pdf gae
+
+# Default webapp to run/deploy.  Options are: form, pdf, gae
+app.run = form
+
+# Package prefixes for the webapps when creating the wars.
+app.name.form = dmex
+app.name.pdf = dmex-pdf
+app.name.gae = dmex-gae
+
+# Location of the Daisymaths Exercises library source
+#dmex.dir = ../dmex
+
+# GAE deployment properties
+#
+# The default application id
+dmex.gae.app.id.default = dmexgsl
+# The possible application versions
+dmex.gae.app.version.options = prod,test
+# The default application version
+dmex.gae.app.version.default = test
+
+
+####################
+### DEPENDENCIES ###
+####################
+# Set various classpaths to compile-time jar resources, etc.
+# When setting "jars" properties, separate the paths with a colon (:) or
+# semi-colon (;) so the values can be used in a <pathelement path="value"/>
+# element.
+
+# Set the path to the Google AppEngine SDK
+appengine.sdk = /home/gsl/workspace/dmex.extra/appengine-java-sdk
+
+# Set the "api.jars" property to point to one or more of the compile-time
+# jars: servlet-api.jar, jsp-api.jar and el-api.jar.  See lib/shared/README.
+#
+# Obtain the API jars from the Tomcat install
+_tomcat.dir = /home/gsl/workspace/dmex.extra/tomcat/apache-tomcat
+api.jars = ${_tomcat.dir}/lib/el-api.jar:\
+${_tomcat.dir}/lib/jsp-api.jar:\
+${_tomcat.dir}/lib/servlet-api.jar
+#
+# Obtain the API jars from the GAE SDK:
+#api.jars = ${appengine.sdk}/lib/shared/servlet-api.jar:\
+#{appengine.sdk}/lib/shared/jsp-api.jar:\
+#{appengine.sdk}/lib/shared/el-api.jar
+#
+# Obtain the API jars from a Jetty install:
+#_jetty.dir = /opt/jetty/lib
+#api.jars = ${_jetty.dir}/servlet-api-2.5-20081211.jar:\
+#${_jetty.dir}/jsp-2.1/jsp-api-2.1-glassfish-2.1.v20091210.jar
+
+# Set the "runtime.jars" property to point to one or more of the runtime jars:
+# jstl.jar and standard.jar.  These jars are not required for compilation but
+# are copied to the WEB-INF/lib directory of all webapps.
+# See lib/core/README.
+_taglibs.dir=/home/gsl/workspace/dmex.extra/tomcat/taglibs/lib
+runtime.jars = ${_taglibs.dir}/jstl.jar:\
+${_taglibs.dir}/standard.jar
+
+# Set the "gae.jars" property to point to the GAE-only dependencies.
+# See lib/gae/README.
+_xalan.dir = /opt/xalan-j
+gae.jars = ${_xalan.dir}/xalan.jar:${_xalan.dir}/serializer.jar
+
+# Provide the required jars for running the local Jetty web server.
+# See lib/jetty/README for the requirements and options for providing them.
+#
+# Set the path to the Jetty6 lib/ directory.  You can copy the jetty-ant.jar
+# to the ${jetty.lib.dir}/ext/ directory as well.
+jetty.lib.dir = /opt/jetty/lib
+#
+# Set the "jetty.jars" property to point to some or all of the jars required
+# by Jetty.
+#_jetty.dir=/opt/jetty/lib
+#jetty.jars=${_jetty.dir}/jetty-6.1.26.jar:\
+#${_jetty.dir}/jetty-util-6.1.26.jar:\
+#${_jetty.dir}/plus/jetty-plus-6.1.26.jar:\
+#${_jetty.dir}/naming/jetty-naming-6.1.26.jar:\
+#${_jetty.dir}/servlet-api-2.5-20081211.jar:\
+#${_jetty.dir}/jsp-2.1/jsp-api-2.1-glassfish-2.1.v20091210.jar:\
+#${_jetty.dir}/jsp-2.1/jsp-2.1-glassfish-2.1.v20091210.jar:\
+#${_jetty.dir}/jsp-2.1/core-3.1.1.jar
+
+# Set the path to the Checkstyle 5.3 jar for 'ant checkstyle'
+checkstyle.jar = /opt/checkstyle/checkstyle-5.3-all.jar
+
+# Set the path to the JUnit jar for 'ant testcompile' and 'ant test'
+junit.jar = /opt/junit/junit-4.8.1.jar
+
+# vim: ft=jproperties

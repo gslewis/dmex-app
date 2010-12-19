@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<FormExerciseList>
+    <exercise class="net.gslsrc.dmex.exercise.tables.TablesRevision">
+        <validator>net.gslsrc.dmex.servlet.form.validate.impl.TablesRevisionProblemValidator</validator>
+    </exercise>
+    <exercise class="net.gslsrc.dmex.exercise.longmult.LongMultiplication">
+        <validator>net.gslsrc.dmex.servlet.form.validate.impl.LongMultiplicationProblemValidator</validator>
+    </exercise>
+    <exercise class="net.gslsrc.dmex.exercise.longdiv.LongDivision">
+        <validator>net.gslsrc.dmex.servlet.form.validate.impl.LongDivisionProblemValidator</validator>
+    </exercise>
+</FormExerciseList>

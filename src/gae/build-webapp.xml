@@ -1,0 +1,93 @@
+<project name="dmex-app-gae" default="compile">
+
+<!-- Compiles the DMEX Form app for deployment to Google AppEngine.
+The webapp is deployed from the build directory, so we don't package as a war.
+
+The ${appengine.sdk} property should be set in the build.properties file.
+-->
+
+<fail message="Please define the appengine.sdk property to point to your SDK directory">
+    <condition>
+        <not><and>
+            <isset property="appengine.sdk"/>
+            <available file="${appengine.sdk}/config/user/ant-macros.xml"/>
+        </and></not>
+    </condition>
+</fail>
+
+<import file="${appengine.sdk}/config/user/ant-macros.xml"/>
+
+<property name="http.port" value="8080"/>
+
+<target name="compile" description="Compiles the Form webapp for GAE">
+    <property name="war.dir" value="${build.dir}/gae"/>
+
+    <!-- When 'compile' is called via 'deploy' these properties are passed in
+    from user input. -->
+    <property name="dmex.gae.app.id" value="dmexgsl"/>
+    <property name="dmex.gae.app.version" value="test"/>
+
+    <!-- Compiles the plain form webapp to ${build.dir}/gae.  This will
+    include the JSTL libs from lib/runtime which we don't need on GAE. -->
+    <ant antfile="${basedir}/src/form/build-webapp.xml" target="compile"
+        inheritAll="true" inheritRefs="true">
+        <property name="war.dir" value="${build.dir}/gae"/>
+    </ant>
+
+    <!-- Install any GAE customisations.  No filtering. -->
+    <copy todir="${war.dir}" overwrite="true">
+        <fileset dir="${web.dir}/gae">
+            <exclude name="WEB-INF/appengine-web.xml"/>
+            <exclude name="**/.pasture/**"/>
+            <exclude name="**/.*.swp"/>
+        </fileset>
+    </copy>
+
+    <!-- Copy the appengine-web.xml file with filtering to set the id and
+    version -->
+    <copy file="${web.dir}/gae/WEB-INF/appengine-web.xml"
+        todir="${war.dir}/WEB-INF"
+        overwrite="true">
+        <filterset>
+            <filter token="APP_ID" value="${dmex.gae.app.id}"/>
+            <filter token="APP_VERSION" value="${dmex.gae.app.version}"/>
+        </filterset>
+    </copy>
+
+    <!-- Install GAE required jars. -->
+    <property name="gae.jars" value=""/>
+    <copy todir="${war.dir}/WEB-INF/lib" flatten="true">
+        <fileset dir="${lib.dir}/gae" includes="*.jar"/>
+        <path>
+            <pathelement path="${gae.jars}"/>
+        </path>
+    </copy>
+</target>
+
+<target name="run" depends="compile"
+    description="Runs the webapp on the dev_appserver">
+
+    <dev_appserver war="${build.dir}/gae" port="${http.port}"/>
+</target>
+
+<target name="deploy" description="Deploys the webapp to GAE">
+    <property name="dmex.gae.app.id.default" value="daisymaths-exercises"/>
+    <property name="dmex.gae.app.version.options" value="prod,test"/>
+    <property name="dmex.gae.app.version.default" value="test"/>
+
+    <input message="Enter the application id:"
+        defaultvalue="${dmex.gae.app.id.default}"
+        addproperty="dmex.gae.app.id"/>
+
+    <input message="Enter the application version:"
+        validargs="${dmex.gae.app.version.options}"
+        defaultvalue="${dmex.gae.app.version.default}"
+        addproperty="dmex.gae.app.version"/>
+
+    <antcall target="compile" inheritRefs="true"/>
+
+    <appcfg action="update" war="${build.dir}/gae"/>
+</target>
+
+</project>
+<!-- vim: set ft=ant: -->

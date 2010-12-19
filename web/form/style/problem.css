@@ -1,0 +1,36 @@
+/* Layout for pages the render a problem.  Used by both exsession.jsp and
+ * show.jsp.
+ */
+body {
+    margin: 20px 20px 20px 20px;
+}
+
+#maincol {
+    margin-left: 130px;
+    padding-left: 25px;
+}
+
+#leftcol {
+    position: absolute;
+    left: 20px;
+    top: 80px;
+    width: 130px;
+}
+
+#problemForm div.buttons {
+    margin-top: 10px;
+}
+
+#problemForm div.buttons span.other {
+    padding-left: 60px;
+}
+
+table.progress {
+    border: 1px solid green;
+    margin-top: 10px;
+}
+
+table.progress th {
+    text-align: right;
+    padding-right: 0.75em;
+}

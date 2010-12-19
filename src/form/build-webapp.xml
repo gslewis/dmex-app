@@ -1,0 +1,131 @@
+<project name="dmex-app-form" default="dist">
+<description>DMEX webapp with HTML form interface</description>
+
+<target name="prepare">
+    <property name="war.dir" value="${build.dir}/form"/>
+
+    <mkdir dir="${war.dir}"/>
+    <mkdir dir="${war.dir}/WEB-INF"/>
+    <mkdir dir="${war.dir}/WEB-INF/lib"/>
+
+    <!-- Two copies: One with no filtering for most resources, one with
+    filtering with explicit files to be filtered. -->
+    <copy todir="${war.dir}">
+        <fileset dir="${web.dir}/core">
+            <exclude name="WEB-INF/template/footer.jspf"/>
+            <exclude name="**/.pasture/**"/>
+            <exclude name="**/.*.swp"/>
+        </fileset>
+        <fileset dir="${web.dir}/form">
+            <exclude name="**/.pasture/**"/>
+            <exclude name="**/.*.swp"/>
+        </fileset>
+    </copy>
+    <copy todir="${war.dir}">
+        <fileset dir="${web.dir}/core">
+            <include name="WEB-INF/template/footer.jspf"/>
+        </fileset>
+        <filterset refid="release-tokens"/>
+    </copy>
+
+    <property name="runtime.jars" value=""/>
+    <copy todir="${war.dir}/WEB-INF/lib" flatten="true">
+        <fileset dir="${lib.dir}/runtime" includes="*.jar"/>
+        <path>
+            <pathelement path="${runtime.jars}"/>
+        </path>
+    </copy>
+
+    <ant target="-installjars" antfile="${dmex.dir}/src/core/build-module.xml"
+        inheritall="false" inheritrefs="false">
+        <property name="dest.dir" value="${war.dir}/WEB-INF/lib"/>
+        <property name="basedir" value="${dmex.dir}"/>
+    </ant>
+</target>
+
+<!--
+Compiles the webapp classes and resources to the ${war.dir} but does not
+package the directory as a war file.  This means this target can be called
+with an alternate ${war.dir} destination that can then be customised before
+packaging.
+-->
+<target name="compile" depends="prepare"
+    description="Compiles the webapp to ${war.dir}">
+    <!-- May be passed in as a properties (see src/gae/build.xml). -->
+    <property name="war.dir" value="${build.dir}/form"/>
+
+    <mkdir dir="${war.dir}/WEB-INF/classes"/>
+
+    <echo message="Compiling DMEX Form app to ${war.dir}/WEB-INF/classes"/>
+
+    <javac destdir="${war.dir}/WEB-INF/classes" target="1.6" source="1.6"
+        debug="on" debuglevel="lines,vars,source" deprecation="on"
+        includeAntRuntime="false">
+        <compilerarg value="-Xlint:unchecked"/>
+        <src path="${basedir}/src/core"/>
+        <src path="${basedir}/src/form"/>
+        <include name="net/gslsrc/dmex/**/*.java"/>
+        <exclude name="**/.pasture/**/*.java"/>
+        <classpath>
+            <fileset dir="${war.dir}/WEB-INF/lib">
+                <include name="*.jar"/>
+            </fileset>
+            <path refid="compile.classpath"/>
+        </classpath>
+    </javac>
+
+    <copy todir="${war.dir}/WEB-INF/classes">
+        <fileset dir="${basedir}/src/core">
+            <exclude name="CHECK_LIST"/>
+            <exclude name="**/.*.swp"/>
+            <exclude name="**/*.java"/>
+            <exclude name="**/.pasture/**"/>
+            <exclude name="build-webapp.xml"/>
+        </fileset>
+        <fileset dir="${basedir}/src/form">
+            <exclude name="CHECK_LIST"/>
+            <exclude name="**/.*.swp"/>
+            <exclude name="**/*.java"/>
+            <exclude name="**/.pasture/**"/>
+            <exclude name="build-webapp.xml"/>
+        </fileset>
+    </copy>
+</target>
+
+<target name="dist" depends="compile">
+    <property name="app.name.form" value="dmex"/>
+
+    <jar jarfile="${dist.dir}/${app.name.form}-${dmex.app.version}.war"
+        basedir="${war.dir}" excludes="test/**">
+    </jar>
+</target>
+
+<!--
+Run the webapp embedded in the Jetty container at http://localhost:8080/.
+You need to supply the Jetty jars by either placing them in the
+${lib.dir}/jetty directory or setting the ${jetty.jars} property in your build
+properties file (or both).  See ${lib.dir}/jetty/README for the list of
+required jars.
+-->
+<target name="run" depends="compile">
+    <property name="jetty.temp" value="${basedir}/temp/jetty"/>
+    <mkdir dir="${jetty.temp}"/>
+
+    <!-- Set a default value if no jetty.lib.dir is provided. -->
+    <property name="jetty.lib.dir" value=""/>
+
+    <!-- Requires "jetty.classpath" to have been defined in caller. -->
+    <taskdef classpathref="jetty.classpath" resource="tasks.properties"
+        loaderref="jetty.loader"/>
+
+    <jetty tempDirectory="${jetty.temp}">
+        <webApp name="dmex" warfile="${build.dir}/form" contextpath="/"/>
+    </jetty>
+</target>
+
+<target name="deploy" depends="compile">
+    <fail>Deployment action not implemented for form webapp.</fail>
+</target>
+
+</project>
+<!-- vim: set ft=ant: -->

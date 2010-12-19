@@ -1,0 +1,25 @@
+To run the 'form' and 'pdf' webapps locally, the required jars (for
+Jetty 6.1.26) are:
+
+    jetty.jar             (from <jetty>/lib)
+    jetty-util.jar        (from <jetty>/lib)
+    jetty-plus.jar        (from <jetty>/lib/plus)
+    jetty-naming.jar      (from <jetty>/lib/naming)
+    servlet-api-2.5.jar   (from <jetty>/lib)
+    jsp-api-2.1.jar       (from <jetty>/lib/jsp-2.1)
+    jsp-2.1.jar           (from <jetty>/lib/jsp-2.1)
+    core.jar              (from <jetty>/lib/jsp-2.1)
+    jetty-ant.jar         (separate from Jetty package)
+
+These jars can be referenced in any of three ways:
+
+    1).  Copy some or all of the jars to this directory (lib/jetty).
+    2a). Set the ${jetty.lib.dir} property in your build.properties to point
+         to the Jetty install's lib/ directory.
+    2b). Install the jetty-ant.jar in ${jetty.lib.dir}/ext directory.
+    3).  Set the ${jetty.jars} property in your build properties file to point
+         to some or all of the jars.
+
+For instance, you can set ${jetty.lib.dir} to handle all _except_
+jetty-ant.jar and then copy jetty-ant.jar to this lib/jetty directory or point
+to it using ${jetty.jars}.

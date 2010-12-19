@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" 
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+    version="2.5"> 
+
+    <display-name>DaisyMaths Exercises</display-name>
+
+    <listener>
+        <listener-class>net.gslsrc.dmex.servlet.form.FormContextListener</listener-class>
+    </listener>
+
+    <context-param>
+        <param-name>javax.servlet.jsp.jstl.fmt.localizationContext</param-name>
+        <param-value>net.gslsrc.dmex.servlet.form.messages.FormMessages</param-value>
+    </context-param>
+
+    <!--
+    <context-param>
+        <description>
+            Path to the XML configuration of the FormExerciseList to be
+            used in the application.  The list is prepared in the
+            FormContextListener and stored in the servlet context.  The path
+            is relative to the context root and must start with a '/' as it is
+            resolved using getServletContext().getResourceAsStream().
+
+            Default:
+            /WEB-INF/classes/net/gslsrc/dmex/servlet/form/FormExerciseList.xml
+        </description>
+        <param-name>net.gslsrc.dmex.servlet.ExerciseList</param-name>
+        <param-value>/WEB-INF/classes/FormExerciseList.xml</param-value>
+    </context-param>
+    -->
+
+    <servlet>
+        <servlet-name>configex</servlet-name>
+        <servlet-class>net.gslsrc.dmex.servlet.ConfigServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet>
+        <servlet-name>exsession</servlet-name>
+        <servlet-class>net.gslsrc.dmex.servlet.form.ProblemServlet</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>finish</servlet-name>
+        <servlet-class>net.gslsrc.dmex.servlet.form.FinishServlet</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>error</servlet-name>
+        <servlet-class>net.gslsrc.dmex.servlet.ErrorHandler</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>info</servlet-name>
+        <jsp-file>/info.jsp</jsp-file>
+    </servlet>
+
+    <servlet>
+        <servlet-name>show</servlet-name>
+        <jsp-file>/show.jsp</jsp-file>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>info</servlet-name>
+        <url-pattern>/info/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>configex</servlet-name>
+        <url-pattern>/config/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>exsession</servlet-name>
+        <url-pattern>/problem/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>show</servlet-name>
+        <url-pattern>/show/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>finish</servlet-name>
+        <url-pattern>/finish/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>error</servlet-name>
+        <url-pattern>/error/*</url-pattern>
+    </servlet-mapping>
+
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+    </welcome-file-list>
+
+    <error-page>
+        <exception-type>net.gslsrc.dmex.servlet.InvalidRequestException</exception-type>
+        <location>/error</location>
+    </error-page>
+
+</web-app>

@@ -1,0 +1,10 @@
+@import "problem.css";
+
+div.errors {
+    border: 1px solid red;
+}
+
+div.errors ul {
+    list-style: none;
+    padding-left: 1em;
+}

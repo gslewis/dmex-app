@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+    version="2.0">
+
+    <description>DMEX Form tag library</description>
+    <tlib-version>1.0</tlib-version>
+    <short-name>DMEXFormTagLibrary</short-name>
+    <uri>http://dmex.gslsrc.net/dmex-form.tld</uri>
+
+    <tag>
+        <description>Renders a Problem as a form element</description>
+        <name>renderProblem</name>
+        <tag-class>net.gslsrc.dmex.servlet.form.tag.RenderProblemTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>The Problem to be rendered</description>
+            <name>problem</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>net.gslsrc.dmex.exercise.Problem</type>
+        </attribute>
+        <attribute>
+            <description>A ProblemAnswer containing the submitted
+            solution to the problem</description>
+            <name>answer</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>net.gslsrc.dmex.exercise.ProblemAnswer</type>
+        </attribute>
+        <attribute>
+            <description>The locale to be used for rendering</description>
+            <name>locale</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.util.Locale</type>
+        </attribute>
+        <attribute>
+            <description>Render the problem as a form</description>
+            <name>form</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.Boolean</type>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description>Inserts CSS links required by a problem</description>
+        <name>problemStylesheets</name>
+        <tag-class>net.gslsrc.dmex.servlet.form.tag.ProblemStylesheetsTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>The Problem to be rendered</description>
+            <name>problem</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>net.gslsrc.dmex.exercise.Problem</type>
+        </attribute>
+    </tag>
+
+</taglib>

@@ -1,0 +1,83 @@
+#problemContainer {
+    display: table-cell;
+    vertical-align: middle;
+    border: 1px solid blue;
+}
+
+#problemContainer div.hintsBlock {
+    float: right;
+    margin-top:  6px;
+    margin-left: 20px;
+    margin-right: 10px;
+    border: 1px solid cyan;
+}
+
+#problemContainer table.problem {
+    float: left;
+    font-size: 20pt;
+    font-family: sans-serif;
+}
+
+#problemContainer td {
+    width: 40px;
+    height: 40px;
+    text-align: center;
+}
+
+#problemContainer td.blank {
+    border: 1px solid white;
+}
+
+#problemContainer td.blank.error {
+    border: 1px solid red;
+}
+
+#problemContainer td input {
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    font-size: 20pt;
+    font-family: sans-serif;
+}
+
+#problemContainer tr.rule td {
+    padding: 0;
+    height: 5px;
+}
+
+#problemContainer tr.rule td hr {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+#problemContainer td.bracket {
+    width: 5px;
+    font-size: 24pt;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+#problemContainer td.remainder {
+    text-align: right;
+}
+
+#problemContainer span.remainder {
+    font-size: 10pt;
+    font-style: italic;
+}
+
+/* Hints are hidden by default */
+#problemContainer div.hintsContainer {
+    display: none;
+}
+
+#problemContainer div.hintsContainer ul {
+    list-style: none;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+#problemContainer li.hint {
+    font-size: 12pt;
+    font-family: monospace;
+}

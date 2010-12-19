@@ -1,0 +1,20 @@
+table.numpad {
+    font-size: 18pt;
+    font-family: sans-serif;
+    border: 1px solid black;
+    padding: 2px;
+}
+
+table.numpad td {
+    text-align: center;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+}
+
+table.numpad td.digit {
+    border: 1px solid black;
+}
+
+table.numpad td.action {
+}

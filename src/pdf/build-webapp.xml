@@ -1,0 +1,124 @@
+<project name="dmex-app-pdf" default="dist">
+<description>DMEX webapp for PDF work sheet generation</description>
+
+<target name="prepare">
+    <property name="war.dir" value="${build.dir}/pdf"/>
+
+    <mkdir dir="${war.dir}"/>
+    <mkdir dir="${war.dir}/WEB-INF"/>
+    <mkdir dir="${war.dir}/WEB-INF/lib"/>
+
+    <!-- Two copies: One with no filtering for most resources, one with
+    filtering with explicit files to be filtered. -->
+    <copy todir="${war.dir}">
+        <fileset dir="${web.dir}/core">
+            <exclude name="WEB-INF/template/footer.jspf"/>
+            <exclude name="**/.pasture/**"/>
+            <exclude name="**/.*.swp"/>
+        </fileset>
+        <fileset dir="${web.dir}/pdf">
+            <exclude name="**/.pasture/**"/>
+            <exclude name="**/.*.swp"/>
+        </fileset>
+    </copy>
+    <copy todir="${war.dir}">
+        <fileset dir="${web.dir}/core">
+            <include name="WEB-INF/template/footer.jspf"/>
+        </fileset>
+        <filterset refid="release-tokens"/>
+    </copy>
+
+    <property name="runtime.jars" value=""/>
+    <copy todir="${war.dir}/WEB-INF/lib" flatten="true">
+        <fileset dir="${lib.dir}/runtime" includes="*.jar"/>
+        <path>
+            <pathelement path="${runtime.jars}"/>
+        </path>
+    </copy>
+
+    <!-- Use the DMEX PDF module's 'installjars' target to install all the
+    dependency jars in the WEB-INF/lib directory. -->
+    <ant target="-installjars" antfile="${dmex.dir}/src/pdf/build-module.xml"
+        inheritall="false" inheritrefs="false">
+        <property name="dest.dir" value="${war.dir}/WEB-INF/lib"/>
+        <property name="basedir" value="${dmex.dir}"/>
+    </ant>
+</target>
+
+<target name="compile" depends="prepare">
+    <property name="war.dir" value="${build.dir}/pdf"/>
+
+    <mkdir dir="${war.dir}/WEB-INF/classes"/>
+
+    <echo message="Compiling DMEX PDF app to ${war.dir}/WEB-INF/classes"/>
+
+    <javac destdir="${war.dir}/WEB-INF/classes" target="1.6" source="1.6"
+        debug="on" debuglevel="lines,vars,source" deprecation="on"
+        includeAntRuntime="false">
+        <compilerarg value="-Xlint:unchecked"/>
+        <src path="${basedir}/src/core"/>
+        <src path="${basedir}/src/pdf"/>
+        <include name="net/gslsrc/dmex/**/*.java"/>
+        <exclude name="**/.pasture/**/*.java"/>
+        <classpath>
+            <fileset dir="${war.dir}/WEB-INF/lib">
+                <include name="*.jar"/>
+            </fileset>
+            <path refid="compile.classpath"/>
+        </classpath>
+    </javac>
+
+    <!-- filtered copy -->
+    <copy todir="${war.dir}/WEB-INF/classes">
+        <fileset dir="${basedir}/src/core">
+            <exclude name="CHECK_LIST"/>
+            <exclude name="**/.*.swp"/>
+            <exclude name="**/*.java"/>
+            <exclude name="**/.pasture/**"/>
+            <exclude name="build-webapp.xml"/>
+        </fileset>
+        <fileset dir="${basedir}/src/pdf">
+            <exclude name="CHECK_LIST"/>
+            <exclude name="**/.*.swp"/>
+            <exclude name="**/*.java"/>
+            <exclude name="**/.pasture/**"/>
+            <exclude name="build-webapp.xml"/>
+        </fileset>
+    </copy>
+</target>
+
+<target name="dist" depends="compile">
+    <property name="app.name.pdf" value="dmex"/>
+
+    <jar jarfile="${dist.dir}/${app.name.pdf}-${dmex.app.version}.war"
+        basedir="${war.dir}" excludes="test/**">
+    </jar>
+</target>
+
+<!--
+Run the webapp embedded in the Jetty container at http://localhost:8080/.
+You need to supply the Jetty jars by either placing them in the
+${lib.dir}/jetty directory or setting the ${jetty.jars} property in your build
+properties file (or both).  See ${lib.dir}/jetty/README for the list of
+required jars.
+-->
+<target name="run" depends="compile">
+    <property name="jetty.temp" value="${basedir}/temp/jetty"/>
+    <mkdir dir="${jetty.temp}"/>
+
+    <!-- Requires "jetty.class" to have been defined in caller. -->
+    <taskdef classpathref="jetty.classpath" resource="tasks.properties"
+        loaderref="jetty.loader"/>
+
+    <jetty tempDirectory="${jetty.temp}">
+        <webApp name="dmex" warfile="${build.dir}/pdf" contextpath="/"/>
+    </jetty>
+</target>
+
+<target name="deploy" depends="compile">
+    <fail>Deployment action not implemented for PDF webapp.</fail>
+</target>
+
+
+</project>
+<!-- vim: set ft=ant: -->

@@ -1,0 +1,12 @@
+Place Google AppEngine jar dependencies here or set the "gae.jars" property in
+your build.properties file.  The jars will be copied to the WEB-INF/lib
+directory of the GAE webapp.
+
+As of GAE 1.4.0, the default XSLT impl doesn't work so we need to provide
+Xalan as the preferred XSLT library.  (May work with Saxon: haven't tried.)
+The following two jars are required from xalan-j (tested with 2.7.1):
+
+    xalan.jar
+    serializer.jar
+
+Obtained from http://xml.apache.org/xalan-j/.

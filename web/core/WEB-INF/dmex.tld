@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+    version="2.0">
+
+    <description>DMEX tag library</description>
+    <tlib-version>1.0</tlib-version>
+    <short-name>DMEXTagLibrary</short-name>
+    <uri>http://dmex.gslsrc.net/dmex.tld</uri>
+
+    <tag>
+        <description>Supplies localized messages from an Exercise</description>
+        <name>exerciseMsg</name>
+        <tag-class>net.gslsrc.dmex.servlet.tag.ExerciseMessageTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>The message key</description>
+            <name>key</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>The id of the Exercise which localizes the message</description>
+            <name>exercise</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>The locale of the message</description>
+            <name>locale</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.util.Locale</type>
+        </attribute>
+        <attribute>
+            <description>The default message</description>
+            <name>default</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description>Supplies localized info HTML given a path</description>
+        <name>info</name>
+        <tag-class>net.gslsrc.dmex.servlet.tag.InfoTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>The path whose info is retrieved</description>
+            <name>path</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>The locale of the info</description>
+            <name>locale</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.util.Locale</type>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description>Renders a Setting as a form element</description>
+        <name>renderSetting</name>
+        <tag-class>net.gslsrc.dmex.servlet.tag.RenderSettingTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>The Setting instance to be rendered</description>
+            <name>setting</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>net.gslsrc.dmex.settings.Setting</type>
+        </attribute>
+        <attribute>
+            <description>The id of the Exercise to which the Setting belongs</description>
+            <name>exercise</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>The locale to be used for rendering</description>
+            <name>locale</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.util.Locale</type>
+        </attribute>
+    </tag>
+
+</taglib>

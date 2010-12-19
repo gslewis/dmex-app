@@ -1,0 +1,18 @@
+#footer {
+    width: 100%;
+}   
+
+#footerLinks {
+    text-align: center;
+    font-style: italic;
+}
+
+#footerInfo {
+    text-align: right;
+    color: #BBB;
+    font-size: 10pt;
+}  
+
+#footerInfo .build {
+    font-size: 8pt;
+}

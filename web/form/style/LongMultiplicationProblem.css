@@ -1,0 +1,41 @@
+#problemContainer {
+    display: table-cell;
+    vertical-align: middle;
+    border: 1px solid blue;
+    width: 340px;
+}
+
+#problemContainer table {
+    font-size: 20pt;
+    font-family: sans-serif;
+}
+
+#problemContainer td {
+    width: 40px;
+    height: 40px;
+    text-align: center;
+}
+
+#problemContainer td.rule {
+    height: 5px;
+}
+
+#problemContainer td.blank {
+    border: 1px solid white;
+}
+
+#problemContainer td.blank.error {
+    border: 1px solid red;
+}
+
+#problemContainer td input {
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    font-size: 20pt;
+    font-family: sans-serif;
+}
+
+#problemContainer td.zero {
+    border: 1px solid black;
+}

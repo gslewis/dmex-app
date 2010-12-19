@@ -1,0 +1,11 @@
+Place run-time jars used by all webapps here or set the "runtime.jars"
+property in your build.properties file.  The jars will be copied to the
+WEB-INF/lib directory of each webapp.  The requires jars are:
+
+    jstl.jar
+    standard.jar
+
+These jars can be obtained from http://tomcat.apache.org/taglibs/standard/.
+
+Note that these JSTL jars aren't required in the GAE war because GAE supplies
+them itself.

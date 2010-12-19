@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="DMEX webapps" default="compile" basedir=".">
+<description>Daisymaths Exercises web applications</description>
+
+<tstamp/>
+
+<property file="build.properties"/>
+<property file="VERSION"/>
+
+<!-- App version.  Should be obtained from the VERSION file. -->
+<property name="dmex.app.version" value="0"/>
+
+<!-- Location of the core DMEX source. -->
+<property name="dmex.dir" location="../dmex"/>
+
+<property name="src.dir" location="src"/>
+<property name="web.dir" location="web"/>
+<property name="lib.dir" location="lib"/>
+<property name="build.dir" location="build"/>
+<property name="dist.dir" location="dist"/>
+
+<!-- List of webapps to be built.  Override in the build.properties file. -->
+<property name="app.includes" value="form pdf gae"/>
+
+<filterset id="release-tokens">
+    <filter token="build" value="${DSTAMP}-${TSTAMP}"/>
+    <filter token="version" value="${dmex.app.version}"/>
+</filterset>
+
+<!--
+Standard Servlet/JSP jars needed for compilation.
+
+    servlet-api.jar
+    jsp-api.jar
+    el-api.jar
+
+See ${lib.dir}/shared/README.
+-->
+<path id="compile.classpath">
+    <fileset dir="${lib.dir}/shared">
+        <include name="*.jar"/>
+    </fileset>
+    <pathelement path="${api.jars}"/>
+</path>
+
+<target name="compile" depends="-dmex"
+    description="Compiles all the webapp wars to ${dist.dir}">
+    <mkdir dir="${dist.dir}"/>
+
+    <subant inheritRefs="true" inheritAll="true" antfile="build-webapp.xml">
+        <property name="basedir" value="${basedir}"/>
+        <property name="TODAY" value="${TODAY}"/>
+        <dirset dir="src" includes="${app.includes}"/>
+    </subant>
+</target>
+
+<!--
+Ensure the DMEX jars are built before compiling the webapps.  It is then
+up to each webapp to copy the required jars into its WEB-INF/lib directory.
+-->
+<target name="-dmex">
+    <ant antfile="${dmex.dir}/build.xml" dir="${dmex.dir}"
+        target="compile" inheritAll="false">
+        <!-- Ensure we build the dmex.jar in the dmex dir. -->
+        <property name="build.dir" value="${dmex.dir}/build"/>
+    </ant>
+</target>
+
+<target name="clean" description="Cleans up the build/test environment">
+    <delete dir="${build.dir}"/>
+    <delete dir="${dist.dir}"/>
+
+    <delete dir="${basedir}/temp"/>
+</target>
+
+<target name="test-init">
+    <fail message="Missing junit.jar property" unless="junit.jar"/>
+    <fail message="junit.jar value ${junit.jar} does not exist">
+        <condition><not>
+            <available file="${junit.jar}"/>
+        </not></condition>
+    </fail>
+
+    <property name="test.dir" value="${build.dir}/test"/>
+    <property name="test.reports" value="${basedir}/temp/reports"/>
+    <property name="test.temp" value="${basedir}/temp/test"/>
+</target>
+
+<target name="testcompile" depends="test-init,compile"
+    description="Compile all test cases">
+    <mkdir dir="${test.dir}"/>
+
+    <javac destdir="${test.dir}" target="1.6" source="1.6" debug="on"
+        debuglevel="source,lines,vars" deprecation="on"
+        includeAntRuntime="false">
+        <compilerarg value="-Xlint:unchecked"/>
+        <src path="test"/>
+        <include name="**/*.java"/>
+        <exclude name="**/.pasture/**"/>
+        <classpath>
+            <dirset dir="${build.dir}"
+                includes="${app.includes}/WEB-INF/classes"/>
+            <fileset dir="${lib.dir}" includes="**/*.jar"/>
+            <fileset dir="${dmex.dir}/target" includes="**/*.jar"/>
+            <pathelement location="${junit.jar}"/>
+        </classpath>
+    </javac>
+
+    <copy todir="${build.dir}/test">
+        <fileset dir="test">
+            <include name="**/*.txt"/>
+            <include name="**/*.xml"/>
+            <include name="**/*.properties"/>
+            <exclude name="**/.pasture/**"/>
+        </fileset>
+    </copy>
+</target>
+
+<target name="test" depends="testcompile" description="Run the tests">
+    <mkdir dir="${test.reports}"/>
+    <mkdir dir="${test.temp}"/>
+
+    <patternset id="test.sources">
+        <include name="**/*Test.java"/>
+        <exclude name="**/.pasture/**"/>
+    </patternset>
+
+    <junit printsummary="on" fork="on" forkmode="perTest" maxmemory="128m">
+        <jvmarg value="-Dtest.temp=${test.temp}"/>
+        <batchtest todir="${test.reports}">
+            <fileset dir="test/form">
+                <patternset refid="test.sources"/>
+            </fileset>
+        </batchtest>
+        <formatter type="plain"/>
+        <classpath>
+            <pathelement path="${test.dir}"/>
+            <dirset dir="${build.dir}"
+                includes="${app.includes}/WEB-INF/classes"/>
+            <fileset dir="${lib.dir}" includes="**/*.jar"/>
+            <fileset dir="${dmex.dir}/target" includes="**/*.jar"/>
+            <pathelement location="${junit.jar}"/>
+        </classpath>
+    </junit>
+</target>
+
+<target name="checkstyle" depends="compile"
+    description="Check code style of source files listed in src/CHECK_LIST">
+
+    <fail message="Missing checkstyle.jar property" unless="checkstyle.jar"/>
+    <fail message="checkstyle.jar value ${checkstyle.jar} does not exist">
+        <condition><not>
+            <available file="${checkstyle.jar}"/>
+        </not></condition>
+    </fail>
+
+    <taskdef resource="checkstyletask.properties"
+        classpath="${checkstyle.jar}"/>
+
+    <checkstyle config="conf/checks.xml">
+        <fileset dir="src">
+            <includesfile name="src/CHECK_LIST"/>
+            <exclude name="**/.pasture/**"/>
+        </fileset>
+        <classpath>
+            <dirset dir="${build.dir}"
+                includes="${app.includes}/WEB-INF/classes"/>
+            <fileset dir="${lib.dir}" includes="**/*.jar"/>
+            <fileset dir="${dmex.dir}/target" includes="**/*.jar"/>
+            <path refid="compile.classpath"/>
+        </classpath>
+    </checkstyle>
+</target>
+
+<target name="javadoc" depends="compile"
+    description="Generate Javadocs in ${build.dir}/javadoc">
+    <tstamp>
+        <format property="DOC_YEAR" pattern="yyyy"/>
+    </tstamp>
+
+    <javadoc destdir="${build.dir}/javadoc"
+            doctitle="DMEX WebApp ${dmex.app.version}"
+            windowtitle="DMEX WebApp ${dmex.app.version} - 2010-${DOC_YEAR}"
+            Overview="conf/overview.html">
+        <header>
+            <![CDATA[<i>DMEX WebApp ${dmex.app.version}</i>]]>
+        </header>
+        <fileset dir="src" defaultexcludes="yes">
+            <include name="**/*.java"/>
+            <exclude name="**/.pasture/**"/>
+        </fileset>
+        <classpath>
+            <fileset dir="${lib.dir}" includes="**/*.jar"/>
+            <fileset dir="${dmex.dir}/target" includes="**/*.jar"/>
+            <path refid="compile.classpath"/>
+        </classpath>
+    </javadoc>
+</target>
+
+<!--
+Runs a webapp by calling the "run" target of the given app's build-webapp.xml.
+
+The webapp to run is given by the "app.run" build property.  The default value
+is set in the build.properties file and can be overriden by invoking:
+
+    ant -Dapp.run=<app_id> run
+
+where "app_id" is either "form", "pdf" or "gae".
+-->
+<target name="run" depends="compile"
+    description="Runs the app given by the ${app.run} property">
+    <fail message="Please set the app.run property" unless="app.run"/>
+
+    <!-- Set the classpath for Jetty6 for webapps that run in Jetty. -->
+    <path id="jetty.classpath">
+        <fileset dir="${lib.dir}/jetty">
+            <include name="*.jar"/>
+        </fileset>
+        <pathelement path="${jetty.jars}"/>
+        <fileset dir="${jetty.lib.dir}">
+            <include name="jetty-*.jar"/>
+            <include name="servlet-api-*.jar"/>
+            <include name="plus/jetty-plus-*.jar"/>
+            <include name="naming/jetty-naming-*.jar"/>
+            <include name="jsp-2.1/jsp-api-2.1-*.jar"/>
+            <include name="jsp-2.1/jsp-2.1-*.jar"/>
+            <include name="jsp-2.1/core-*.jar"/>
+            <include name="ext/jetty-ant-*.jar"/>
+        </fileset>
+    </path>
+
+    <ant antfile="src/${app.run}/build-webapp.xml" target="run"
+        inheritRefs="true" inheritAll="true">
+        <property name="basedir" value="${basedir}"/>
+        <property name="TODAY" value="${TODAY}"/>
+    </ant>
+</target>
+
+<!--
+Deploys a webapp by calling the "deploy" target of the given app's
+build-webapp.xml.
+
+The webapp to deploy is given by the "app.run" build property.  The default
+value is set in the build.properties file and can be overridden by invoking:
+
+    ant -Dapp.run=<app_id> deploy
+
+where "app_id" is either "form", "pdf" or "gae".
+-->
+<target name="deploy" depends="compile"
+    description="Deploys the app given by the ${app.run} property">
+    <fail message="Please set the app.run property" unless="app.run"/>
+
+    <ant antfile="src/${app.run}/build-webapp.xml" target="deploy"
+        inheritRefs="true" inheritAll="true">
+        <property name="basedir" value="${basedir}"/>
+        <property name="TODAY" value="${TODAY}"/>
+    </ant>
+</target>
+
+</project>

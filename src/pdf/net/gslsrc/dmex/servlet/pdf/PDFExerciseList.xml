@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<ExerciseList>
+    <exercise class="net.gslsrc.dmex.exercise.tables.TablesRevision"/>
+    <exercise class="net.gslsrc.dmex.exercise.longmult.LongMultiplication"/>
+    <exercise class="net.gslsrc.dmex.exercise.longdiv.LongDivision"/>
+</ExerciseList>
