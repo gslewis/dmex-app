@@ -36,6 +36,20 @@ $(document).ready(function() {
         });
     });
 
+    // Make the numpad <td>s behave a bit button-like.
+    $(".numpad td").mousedown(function() {
+        var node = $(this);
+
+        node.addClass("pressed");
+
+        var rc = function() {
+            node.removeClass("pressed");
+        };
+
+        node.mouseup(rc);
+        node.mouseout(rc);
+    });
+
     // Focus on the first focusable <input>.
     focusFirst();
 }

@@ -18,3 +18,7 @@ table.numpad td.digit {
 
 table.numpad td.action {
 }
+
+table.numpad td.pressed {
+    background: #bbbbbb;
+}
