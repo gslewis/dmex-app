@@ -1,8 +1,8 @@
 #problemContainer {
     display: table-cell;
     vertical-align: middle;
-    border: 1px solid blue;
     width: 340px;
+    /*border: 1px solid blue;*/
 }
 
 #problemContainer table {
