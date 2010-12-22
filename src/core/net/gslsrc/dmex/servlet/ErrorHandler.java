@@ -43,6 +43,19 @@ public class ErrorHandler extends DMEXServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
         throws IOException, ServletException {
 
+        handleError(req, resp);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+        throws IOException, ServletException {
+
+        handleError(req, resp);
+    }
+
+    private void handleError(HttpServletRequest req, HttpServletResponse resp)
+        throws IOException, ServletException {
+
         Throwable cause =
                 (Throwable)req.getAttribute("javax.servlet.error.exception");
         if (cause != null) {
