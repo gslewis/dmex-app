@@ -130,8 +130,21 @@ public class ConfigServlet extends DMEXServlet {
         }
 
         Settings settings = (Settings)getAttr(session, SESSION_ATTR_SETTINGS);
-        if (settings == null || !settings.getExerciseId().equals(eid)) {
-            throw new InvalidRequestException("Invalid settings: " + settings);
+        if (settings == null) {
+            // No settings in session: we have problem returned here by
+            // clicking the browser "Back" button from the problem page before
+            // completing any problems.
+            //
+            // Recreate the settings object so we can revalidate the form
+            // contents, which may have been modified.
+
+            settings = ex.newSettings();
+            setAttr(session, SESSION_ATTR_SETTINGS, settings);
+
+        } else if (!settings.getExerciseId().equals(eid)) {
+            throw new InvalidRequestException(
+                    "Settings mismatch: expected '" + eid
+                    + "', got '" + settings.getExerciseId() + "'");
         }
 
         // Apply the user-provided parameter value to the corresponding
