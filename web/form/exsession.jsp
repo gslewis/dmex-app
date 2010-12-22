@@ -80,32 +80,8 @@
 </div>
 </c:if>
 
-<table class="progress">
-    <tbody>
-        <tr>
-            <th>Submitted</th>
-            <td>${exsession.submitted}</td>
-        </tr>
-        <tr>
-            <th>Correct</th>
-            <td>${exsession.correct}</td>
-        </tr>
-        <tr>
-            <th>Incorrect</th>
-            <td>${exsession.incorrect}</td>
-        </tr>
-        <tr>
-            <th>Skipped</th>
-            <td>${exsession.skipped}</td>
-        </tr>
-    </tbody>
-</table>
+<%@ include file="/WEB-INF/template/bottomPanel.jsp" %>
 
-<p>
-<a href="${pageContext.servletContext.contextPath}/config/${eid}">
-    <fmt:message key="link.new.session"/>
-</a>
-</p>
 </div>
 
 <%@ include file="/WEB-INF/template/footer.jspf" %>
