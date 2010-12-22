@@ -105,9 +105,9 @@ public class ConfigServlet extends DMEXServlet {
         assert ex != null;
         assert settings != null;
 
-        Set<String> scripts = getJavascript(settings);
-        if (scripts.size() > 0) {
-            req.setAttribute(REQUEST_ATTR_JAVASCRIPT, scripts);
+        Set<String> resources = getResources(settings);
+        if (resources.size() > 0) {
+            req.setAttribute(REQUEST_ATTR_RESOURCES, resources);
         }
 
         req.getRequestDispatcher("/configex.jsp").include(req, resp);
@@ -172,8 +172,8 @@ public class ConfigServlet extends DMEXServlet {
         }
     }
 
-    private Set<String> getJavascript(Settings settings) {
-        Set<String> scripts = null;
+    private Set<String> getResources(Settings settings) {
+        Set<String> resources = null;
 
         String root = getServletContext().getContextPath();
 
@@ -183,20 +183,20 @@ public class ConfigServlet extends DMEXServlet {
                 continue;
             }
 
-            String script = renderer.getJavascript(setting);
-            if (script != null) {
-                if (scripts == null) {
-                    scripts = new LinkedHashSet<String>();
+            Collection<String> list = renderer.getResources(setting, root);
+            if (list != null && !list.isEmpty()) {
+                if (resources == null) {
+                    resources = new LinkedHashSet<String>();
                 }
 
-                scripts.add(root + script);
+                resources.addAll(list);
             }
         }
 
-        if (scripts == null) {
-            scripts = Collections.emptySet();
+        if (resources == null) {
+            resources = Collections.emptySet();
         }
 
-        return scripts;
+        return resources;
     }
 }

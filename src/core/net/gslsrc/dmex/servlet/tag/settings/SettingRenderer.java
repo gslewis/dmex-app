@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.util.Enumeration;
 import java.net.URL;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Locale;
@@ -94,8 +95,8 @@ public abstract class SettingRenderer {
      *
      * @return the javascript file to include or null for no javascript
      */
-    public String getJavascript(Setting setting) {
-        return null;
+    public Collection<String> getResources(Setting setting, String rootPath) {
+        return Collections.emptyList();
     }
 
     public static SettingRenderer getRenderer(Setting setting) {

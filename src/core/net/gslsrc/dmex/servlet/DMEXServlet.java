@@ -59,9 +59,13 @@ public abstract class DMEXServlet extends HttpServlet {
      */
     public static final String CONTEXT_ATTR_EXLIST = "exlist";
 
-    /** Request attribute that contains a list of JavaScript resource paths. */
-    public static final String REQUEST_ATTR_JAVASCRIPT =
-            "net.gslsrc.dmex.servlet.javascript";
+    /**
+     * Request attribute that contains a list of JavaScript or CSS resource
+     * elements.  Each entry in the list should be a full HTML {@code <link>}
+     * or {@code <script>} to be added in the {@code scripts.jsp} template.
+     */
+    public static final String REQUEST_ATTR_RESOURCES =
+            "net.gslsrc.dmex.servlet.resources";
 
     /**
      * Request attribute that contains a boolean indicating whether to

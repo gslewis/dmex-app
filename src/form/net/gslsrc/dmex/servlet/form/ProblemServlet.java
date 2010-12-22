@@ -234,9 +234,10 @@ public class ProblemServlet extends DMEXServlet {
 
         req.setAttribute(REQUEST_ATTR_JAVASCRIPT_JQUERY, Boolean.TRUE);
 
-        Collection<String> scripts = getJavascript(problem);
-        if (scripts != null && scripts.size() > 0) {
-            req.setAttribute(REQUEST_ATTR_JAVASCRIPT, scripts);
+        Collection<String> resources = getResources(problem,
+                                        getServletContext().getContextPath());
+        if (resources != null && resources.size() > 0) {
+            req.setAttribute(REQUEST_ATTR_RESOURCES, resources);
         }
 
         req.getRequestDispatcher("/exsession.jsp").include(req, resp);
@@ -261,16 +262,20 @@ public class ProblemServlet extends DMEXServlet {
         return list;
     }
 
-    private Set<String> getJavascript(Problem problem) {
+    private Set<String> getResources(Problem problem, String rootPath) {
         if (problem != null) {
             String key = problem.getExerciseId() + ".problem.javascript";
 
             String value = properties.getProperty(key);
             if (value != null) {
-                String root = getServletContext().getContextPath();
+                StringBuilder js = new StringBuilder();
+                js.append("<script type=\"text/javascript\" src=\"")
+                    .append(rootPath)
+                    .append("/javascript/problem/")
+                    .append(value)
+                    .append("\"></script>");
 
-                return Collections.singleton(
-                        root + "/javascript/problem/" + value);
+                return Collections.singleton(js.toString());
             }
         }
 

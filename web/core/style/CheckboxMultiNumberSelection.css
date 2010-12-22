@@ -1,0 +1,13 @@
+fieldset.CheckboxMultiNumberSelection {
+    max-width: 800px;
+    margin-bottom: 16px;
+}
+
+fieldset.CheckboxMultiNumberSelection span.option {
+    margin-right: 1.25em;
+}
+
+fieldset.CheckboxMultiNumberSelection span.all {
+    padding: 2px;
+    background: #eeeeee;
+}

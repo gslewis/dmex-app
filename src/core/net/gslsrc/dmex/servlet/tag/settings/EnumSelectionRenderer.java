@@ -26,6 +26,8 @@ import net.gslsrc.dmex.exercise.Exercise;
 import net.gslsrc.dmex.settings.EnumSelection;
 import net.gslsrc.dmex.settings.Setting;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Locale;
 import javax.servlet.jsp.JspException;
 
@@ -54,13 +56,14 @@ public class EnumSelectionRenderer extends SettingRenderer {
         EnumSelection es = (EnumSelection)setting;
 
         StringBuilder sb = new StringBuilder();
-        sb.append("<fieldset>");
+        sb.append("<fieldset class='RadioEnumSelection'>");
 
         String title = exercise.getMessage(locale,
                                            "setting.title." + es.getId());
         sb.append("<legend>").append(title).append("</legend>");
 
         for (Enum e : es.getValues()) {
+            sb.append("<span class='option'>");
             sb.append("<input type='radio' name='").append(es.getId())
                     .append("' value='").append(e.name()).append("'");
 
@@ -70,10 +73,26 @@ public class EnumSelectionRenderer extends SettingRenderer {
 
             String label = es.getMessage(locale, "label." + e.name(), e.name());
             sb.append("/>&nbsp;").append(label);
+            sb.append("</span>");
         }
 
         sb.append("</fieldset>");
 
         return sb.toString();
+    }
+
+    @Override
+    public Collection<String> getResources(Setting setting, String rootPath) {
+        if (setting instanceof EnumSelection) {
+            StringBuilder css = new StringBuilder();
+            css.append("<link type=\"text/css\" rel=\"stylesheet\" href=\"")
+                .append(rootPath)
+                .append("/style/RadioEnumSelection.css")
+                .append("\"></link>");
+
+            return Collections.singleton(css.toString());
+        }
+
+        return super.getResources(setting, rootPath);
     }
 }

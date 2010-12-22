@@ -8,10 +8,10 @@
 <script type="text/javascript" src="${pageContext.servletContext.contextPath}/javascript/jquery.js"></script>
 </c:if>
 
-<c:set var="scripts" value="${requestScope['net.gslsrc.dmex.servlet.javascript']}"/>
+<c:set var="scripts" value="${requestScope['net.gslsrc.dmex.servlet.resources']}"/>
 <c:if test="${scripts != null and fn:length(scripts) gt 0}">
     <c:forEach var="script" begin="0" items="${scripts}">
-        <script type="text/javascript" src="${script}"></script>
+        <c:out value="${script}" escapeXml="false"/>
     </c:forEach>
 </c:if>
 

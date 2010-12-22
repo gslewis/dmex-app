@@ -26,6 +26,8 @@ import net.gslsrc.dmex.exercise.Exercise;
 import net.gslsrc.dmex.settings.MultiNumberSelection;
 import net.gslsrc.dmex.settings.Setting;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Locale;
 import javax.servlet.jsp.JspException;
 
@@ -60,6 +62,10 @@ public class CheckboxMultiNumberSelectionRenderer extends SettingRenderer {
                                            "setting.title." + mns.getId());
         sb.append("<legend>").append(title).append("</legend>");
 
+        sb.append(makeCheckBox(mns.getId() + ".all",
+                    exercise.getMessage(locale, "setting.checkbox.all", "All"),
+                    false, "all"));
+
         int size = mns.getHighValue() - mns.getLowValue() + 1;
         for (int i = 0; i < size; ++i) {
             int value = mns.getLowValue() + i;
@@ -67,27 +73,37 @@ public class CheckboxMultiNumberSelectionRenderer extends SettingRenderer {
                                    isSelected(mns, value)));
         }
 
-        sb.append(makeCheckBox(mns.getId() + ".all",
-                    exercise.getMessage(locale, "setting.checkbox.all", "All"),
-                    false));
-
         sb.append("</fieldset>");
 
         return sb.toString();
     }
 
     @Override
-    public String getJavascript(Setting setting) {
+    public Collection<String> getResources(Setting setting, String rootPath) {
         if (setting instanceof MultiNumberSelection) {
-            return "/javascript/CheckboxMultiNumberSelection.js";
+            StringBuilder js = new StringBuilder();
+            js.append("<script type=\"text/javascript\" src=\"")
+                .append(rootPath)
+                .append("/javascript/CheckboxMultiNumberSelection.js")
+                .append("\"></script>");
+
+            StringBuilder css = new StringBuilder();
+            css.append("<link type=\"text/css\" rel=\"stylesheet\" href=\"")
+                .append(rootPath)
+                .append("/style/CheckboxMultiNumberSelection.css")
+                .append("\"></link>");
+
+            return Arrays.asList(js.toString(), css.toString());
         }
 
-        return super.getJavascript(setting);
+        return super.getResources(setting, rootPath);
     }
 
-    private String makeCheckBox(String name, String value, boolean checked) {
+    private String makeCheckBox(String name, String value, boolean checked,
+            String... spanCls) {
         StringBuilder sb = new StringBuilder();
 
+        sb.append("<span class='").append(makeSpanClass(spanCls)).append("'>");
         sb.append("<input type='checkbox' name='").append(name)
                 .append("' value='").append(value).append("'");
 
@@ -96,6 +112,26 @@ public class CheckboxMultiNumberSelectionRenderer extends SettingRenderer {
         }
 
         sb.append("/>&nbsp;").append(value);
+        sb.append("</span>");
+
+        return sb.toString();
+    }
+
+    private String makeSpanClass(String[] values) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("option");
+
+        if (values != null && values.length > 0) {
+            for (String value : values) {
+                if (value != null) {
+                    String s = value.trim();
+
+                    if (!s.isEmpty()) {
+                        sb.append(" ").append(s);
+                    }
+                }
+            }
+        }
 
         return sb.toString();
     }

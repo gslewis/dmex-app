@@ -36,9 +36,11 @@
             locale="${pageContext.request.locale}"/>
     </c:forEach>
 
-    <input type='button' value='<fmt:message key="button.back"/>'
-        onclick='location.href="${pageContext.servletContext.contextPath}/"'/>
-    <input type='submit' value='<fmt:message key="button.next"/>'/>
+    <div class="buttons">
+        <input type='button' value='<fmt:message key="button.back"/>'
+            onclick='location.href="${pageContext.servletContext.contextPath}/"'/>
+        <input type='submit' value='<fmt:message key="button.next"/>'/>
+    </div>
 </form>
 
 <%@ include file="/WEB-INF/template/footer.jspf" %>

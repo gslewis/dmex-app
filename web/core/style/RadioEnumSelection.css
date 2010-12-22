@@ -1,0 +1,9 @@
+fieldset.RadioEnumSelection {
+    max-width: 160px;
+    margin-bottom: 16px;
+}
+
+fieldset.RadioEnumSelection span.option {
+    margin-right: 12px;
+    display: block;
+}
