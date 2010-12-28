@@ -1,5 +1,8 @@
 <%-- vim:set ft=jsp: --%>
 <%@ page contentType="text/html;charset=UTF-8" isELIgnored="false" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <c:set var="root">
     <c:choose>
@@ -17,15 +20,15 @@
         <a href="${homeUrl}">home</a> |
         <%-- Disable 'about' link if on 'about' page. --%>
         <c:choose>
-            <c:when test="${pageContext.request.requestURI != '/info/about'}">
+            <c:when test="${fn:contains(pageContext.request.requestURI, '/info/about')}">
+                <span class="disabledLink"><fmt:message key="link.about"/></span>
+            </c:when>
+            <c:otherwise>
                 <c:url var="aboutUrl" value="/info/about">
                     <c:param name="back"
                         value="${pageContext.request.requestURI}"/>
                 </c:url>
                 <a href="${aboutUrl}"><fmt:message key="link.about"/></a>
-            </c:when>
-            <c:otherwise>
-                <span class="disabledLink"><fmt:message key="link.about"/></span>
             </c:otherwise>
         </c:choose>
     </div>
