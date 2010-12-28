@@ -7,28 +7,38 @@
 <table class="progress">
     <tbody>
         <tr class="odd">
-            <th>Submitted</th>
+            <th><fmt:message key="progress.submitted"/></th>
             <td>${exsession.submitted}</td>
         </tr>
         <tr class="even">
-            <th>Correct</th>
+            <th><fmt:message key="progress.correct"/></th>
             <td>${exsession.correct}</td>
         </tr>
         <tr class="odd">
-            <th>Incorrect</th>
+            <th><fmt:message key="progress.incorrect"/></th>
             <td>${exsession.incorrect}</td>
         </tr>
         <tr class="even">
-            <th>Skipped</th>
+            <th><fmt:message key="progress.skipped"/></th>
             <td>${exsession.skipped}</td>
         </tr>
     </tbody>
 </table>
 
-<div class="bottomLinks">
-    <a href="${pageContext.servletContext.contextPath}/config/${eid}">
-        <fmt:message key="link.new.session"/>
-    </a>
-</div>
+<ul class="bottomLinks">
+    <li>
+        <c:url var="restartUrl" value="/problem/${eid}">
+            <c:param name="action" value="restart"/>
+        </c:url>
+        <a href="${restartUrl}">
+            <fmt:message key="link.restart.session"/>
+        </a>
+    </li>
+    <li>
+        <a href="${pageContext.servletContext.contextPath}/config/${eid}">
+            <fmt:message key="link.new.session"/>
+        </a>
+    </li>
+</ul>
 
 </div>

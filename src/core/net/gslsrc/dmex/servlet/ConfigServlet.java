@@ -54,6 +54,8 @@ public class ConfigServlet extends DMEXServlet {
 
     /**
      * Session attribute that contains the current {@link Settings} object.
+     * The {@code Settings} object remains in the session so that we can
+     * restart the session at any time.
      */
     public static final String SESSION_ATTR_SETTINGS =
             "net.gslsrc.dmex.settings.Settings";

@@ -102,24 +102,34 @@ public class ProblemServlet extends DMEXServlet {
             throw new InvalidRequestException("Missing exercise id");
         }
 
+        ExerciseSession exsession = getExerciseSession(session);
+
+        // If restarting, discard the existing session.
+        if (exsession != null
+                && "restart".equalsIgnoreCase(req.getParameter("action"))) {
+            exsession = null;
+            setAttr(session, SESSION_ATTR_EXSESSION, null);
+        }
+
         Settings settings = (Settings)getAttr(session, SESSION_ATTR_SETTINGS);
-        if (settings != null) {
+
+        if (exsession != null) {
+            // There is an existing session and this is a GET request.  We
+            // have skipped or otherwise gone to the next problem in the
+            // exsession.
+
+            exsession.notifySkip();
+            nextProblem(eid, exsession, session, req, resp);
+
+        } else if (settings != null) {
             // There are settings so start a new exsession.  We have come from
-            // the ConfigServlet.
+            // the ConfigServlet or clicked a "restart" link.
+
             doExSession(eid, settings, session, req, resp);
 
         } else {
-            // There are no settings but this is a GET request.  We have
-            // skipped or otherwise gone to the next problem in an existing
-            // exsession.
-            ExerciseSession exsession = getExerciseSession(session);
-            if (exsession == null) {
-                throw new InvalidRequestException("Missing exercise session");
-            }
-
-            exsession.notifySkip();
-
-            nextProblem(eid, exsession, session, req, resp);
+            throw new InvalidRequestException(
+                    "Missing settings and exercise session");
         }
     }
 
@@ -137,8 +147,11 @@ public class ProblemServlet extends DMEXServlet {
 
         ExerciseSession exsession = ex.newSession(settings);
         setAttr(session, SESSION_ATTR_EXSESSION, exsession);
-        setAttr(session, SESSION_ATTR_SETTINGS, null);
         setAttr(session, SESSION_ATTR_PROBLEM, null);
+
+        // We don't remove the settings from the session so that we can
+        // restart the exsession using the same settings by passing the
+        // "action=restart" parameters to the /problem/eid URL.
 
         nextProblem(eid, exsession, session, req, resp);
     }

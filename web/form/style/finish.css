@@ -1,0 +1,11 @@
+@import "form.css";
+
+div#finishMessage {
+    font-size: 12pt;
+    padding: 1.5em;
+    margin-bottom: 6px;
+}
+
+div.bottomLinks {
+    margin-top: 6px;
+}

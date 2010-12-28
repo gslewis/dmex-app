@@ -15,6 +15,9 @@
 <title><fmt:message key="dmex.title"/></title>
 
 <%@ include file="/WEB-INF/template/stylesheets.jsp" %>
+
+<c:url var="finishCss" value="/style/finish.css"/>
+<link type="text/css" rel="stylesheet" href="${finishCss}"/>
 </head>
 
 <body>
@@ -30,38 +33,47 @@
 
 <%@ include file="/WEB-INF/template/showErrors.jsp" %>
 
-<table id="progress">
-    <thead>
-        <tr>
-            <th>Submitted</th>
-            <th>Correct</th>
-            <th>Incorrect</th>
-            <th>Skipped</th>
-            <th>Time</th>
-        </tr>
-    </thead>
+<div id="finishMessage">
+    <fmt:message key="finish.text">
+        <fmt:param>
+            <fmt:formatNumber value="${exsession.elapsedTime / 1000}"
+                pattern="##0"/>
+        </fmt:param>
+    </fmt:message>
+</div>
+
+<table class="progress">
     <tbody>
-        <tr>
+        <tr class="odd">
+            <th><fmt:message key="progress.submitted"/></th>
             <td>${exsession.submitted}</td>
+        </tr>
+        <tr class="even">
+            <th><fmt:message key="progress.correct"/></th>
             <td>${exsession.correct}</td>
+        </tr>
+        <tr class="odd">
+            <th><fmt:message key="progress.incorrect"/></th>
             <td>${exsession.incorrect}</td>
+        </tr>
+        <tr class="even">
+            <th><fmt:message key="progress.skipped"/></th>
             <td>${exsession.skipped}</td>
-            <td>
-                <fmt:formatNumber value="${exsession.elapsedTime / 1000}"
-                    pattern="##0"/>&nbsp;secs
-            </td>
         </tr>
     </tbody>
 </table>
 
-<p>
-    <a href="${pageContext.servletContext.contextPath}/config/${eid}">
-        <fmt:message key="link.new.session"/>
-    </a>
-    <br/>
-    <a href="${pageContext.servletContext.contextPath}/">
-        <fmt:message key="link.another.exercise"/>
-    </a>
-</p>
+<ul class="bottomLinks">
+    <li>
+        <a href="${pageContext.servletContext.contextPath}/config/${eid}">
+            <fmt:message key="link.new.session"/>
+        </a>
+    </li>
+    <li>
+        <a href="${pageContext.servletContext.contextPath}/">
+            <fmt:message key="link.another.exercise"/>
+        </a>
+    </li>
+</ul>
 
 <%@ include file="/WEB-INF/template/footer.jspf" %>

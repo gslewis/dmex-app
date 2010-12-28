@@ -1,0 +1,22 @@
+/* Commons styles for the DMEX Form webapp. */
+
+table.progress {
+    border: 2px solid #bababa;
+    border-collapse: collapse;
+}
+
+table.progress tr.odd {}    
+
+table.progress tr.even {
+    background: #eaeaea;
+}
+
+table.progress th {
+    text-align: right;
+    padding: 0.25em;
+}
+
+table.progress td {
+    text-align: center;
+    padding: 0.25em;
+}
