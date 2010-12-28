@@ -95,11 +95,14 @@ function setnodeval(digit, pnode) {
         return;
     }
 
+    // If the node value's length is less than the maximum length, append the
+    // digit to the node's value.  Else truncate the node's value and set to
+    // the digit.
     var max = node.attr("maxlength");
-    var value = node.attr("value");
+    var value = "" + node.attr("value");
 
     if (value.length < max) {
-        node.attr("value", String.concat(value, digit));
+        node.attr("value", value + digit);
     } else {
         node.attr("value", digit);
     }
