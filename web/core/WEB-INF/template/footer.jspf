@@ -9,8 +9,13 @@
 </c:set>
 
 <c:url var="homeUrl" value="/"/>
+
+<%-- Only set the 'back' param from the 'About' page if we are not on the
+'About page' --%>
 <c:url var="aboutUrl" value="/info/about">
-    <c:param name="back" value="${pageContext.request.requestURI}"/>
+    <c:if test="${pageContext.request.requestURI != '/info/about'}">
+        <c:param name="back" value="${pageContext.request.requestURI}"/>
+    </c:if>
 </c:url>
 
 <div id="footer">
