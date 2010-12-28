@@ -10,20 +10,24 @@
 
 <c:url var="homeUrl" value="/"/>
 
-<%-- Only set the 'back' param from the 'About' page if we are not on the
-'About page' --%>
-<c:url var="aboutUrl" value="/info/about">
-    <c:if test="${pageContext.request.requestURI != '/info/about'}">
-        <c:param name="back" value="${pageContext.request.requestURI}"/>
-    </c:if>
-</c:url>
-
 <div id="footer">
     <hr/>
 
     <div id="footerLinks">
         <a href="${homeUrl}">home</a> |
-        <a href="${aboutUrl}">about</a>
+        <%-- Disable 'about' link if on 'about' page. --%>
+        <c:choose>
+            <c:when test="${pageContext.request.requestURI != '/info/about'}">
+                <c:url var="aboutUrl" value="/info/about">
+                    <c:param name="back"
+                        value="${pageContext.request.requestURI}"/>
+                </c:url>
+                <a href="${aboutUrl}"><fmt:message key="link.about"/></a>
+            </c:when>
+            <c:otherwise>
+                <span class="disabledLink"><fmt:message key="link.about"/></span>
+            </c:otherwise>
+        </c:choose>
     </div>
 
     <%-- This template is copied with filtering to set the version and build

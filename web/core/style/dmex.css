@@ -20,3 +20,8 @@ body {
 #footerInfo .build {
     font-size: 8pt;
 }
+
+.disabledLink {
+    color: gray;
+    text-decoration: underline;
+}
