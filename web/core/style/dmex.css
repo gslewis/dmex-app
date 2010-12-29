@@ -25,3 +25,20 @@ body {
     color: gray;
     text-decoration: underline;
 }
+
+div.buttons {
+    width: 300px;
+}
+
+div.buttons input {
+    width: 60px;
+}
+
+div.buttons span.other {
+    float: right;
+}
+
+h2 span.infoLink {
+    font-weight: normal;
+    font-size: 12pt;
+}

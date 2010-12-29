@@ -20,14 +20,6 @@
     padding-top: 4px;
 }
 
-#problemForm div.buttons input {
-    width: 60px;
-}   
-
-#problemForm div.buttons span.other {
-    float: right;
-}
-
 #bottomPanel {
     margin-top: 20px;
 }

@@ -38,6 +38,9 @@
 </div>
 
 <div id="maincol">
+<c:url var="infoUrl" value="/info/${eid}">
+    <c:param name="back" value="/problem/${eid}"/>
+</c:url>
 <h2>
     <fmt:message key="problem.title">
         <fmt:param>
@@ -45,6 +48,9 @@
                 default="${eid}" locale="${pageContext.request.locale}"/>
         </fmt:param>
     </fmt:message>
+    <span class="infoLink">
+        [<a href="${infoUrl}"><fmt:message key="dmex.info"/><a>]
+    </span>
 </h2>
 
 <form id="problemForm" method='post'
