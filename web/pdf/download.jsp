@@ -25,6 +25,9 @@
 
 <body>
 
+<c:url var="infoUrl" value="/info/${eid}">
+    <c:param name="back" value="/download/${eid}"/>
+</c:url>
 <h2>
     <fmt:message key="download.title">
         <fmt:param>
@@ -32,6 +35,9 @@
                 default="${eid}" locale="${pageContext.request.locale}"/>
         </fmt:param>
     </fmt:message>
+    <span class="infoLink">
+        [<a href="${infoUrl}"><fmt:message key="dmex.info"/><a>]
+    </span>
 </h2>
 
 
