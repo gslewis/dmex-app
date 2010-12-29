@@ -126,8 +126,10 @@ public class DownloadServlet extends DMEXServlet {
         String typeParam = req.getParameter("type");
 
         // No selection has been made.  Show the download page with links to
-        // each sheet type that can be downloaded.
+        // each sheet type that can be downloaded.  Ensure that any stored XML
+        // DOM is discarded so we create a new set of problems.
         if (typeParam == null) {
+            setAttr(session, SESSION_ATTR_XML_DOM, null);
             req.setAttribute(REQUEST_ATTR_SUPPORTED_TYPES, outputTypes);
 
             req.getRequestDispatcher("/download.jsp").include(req, resp);
@@ -141,12 +143,7 @@ public class DownloadServlet extends DMEXServlet {
         // for each link, in case the user downloads multiple PDFs from the
         // same page.
 
-        Document doc = null;
-        if (isRefresh(req)) {
-            setAttr(session, SESSION_ATTR_XML_DOM, null);
-        } else {
-            doc = (Document)getAttr(session, SESSION_ATTR_XML_DOM);
-        }
+        Document doc = (Document)getAttr(session, SESSION_ATTR_XML_DOM);
 
         if (doc == null) {
             doc = renderProblems(session, eid, exsession, problemType);
@@ -171,12 +168,6 @@ public class DownloadServlet extends DMEXServlet {
                        "attachment;filename=" + filename);
         resp.getOutputStream().write(content, 0, content.length);
         resp.getOutputStream().flush();
-    }
-
-    private boolean isRefresh(HttpServletRequest req) {
-        String value = req.getParameter("new");
-
-        return value != null && "true".equalsIgnoreCase(value.trim());
     }
 
     @SuppressWarnings("unchecked")

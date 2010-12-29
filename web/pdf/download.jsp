@@ -50,11 +50,19 @@
 </c:forEach>
 </ul>
 
-<form>
+<div class="buttons">
+    <c:url var="backUrl" value="/problem/${eid}"/>
     <input type="button" value='<fmt:message key="button.back"/>'
-    onclick='location.href="${pageContext.servletContext.contextPath}/problem/${eid}"'/>
-    <input type="button" value='<fmt:message key="button.finish"/>'
-        onclick='location.href="${pageContext.servletContext.contextPath}/"'/>
-</form>
+        onclick='location.href="${backUrl}"'/>
+    <c:url var="refreshUrl" value="/download/${eid}"/>
+    <input type="button" value='<fmt:message key="button.refresh"/>'
+        onclick='location.href="${refreshUrl}"'/>
+
+    <span class="other">
+        <c:url var="finishUrl" value="/"/>
+        <input type="button" value='<fmt:message key="button.finish"/>'
+            onclick='location.href="${finishUrl}"'/>
+    </span>
+</div>
 
 <%@ include file="/WEB-INF/template/footer.jspf" %>

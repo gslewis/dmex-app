@@ -30,6 +30,19 @@
                 </c:url>
                 <a href="${aboutUrl}"><fmt:message key="link.about"/></a>
             </c:otherwise>
+        </c:choose> |
+        <%-- Disable 'help' link if on 'help' page. --%>
+        <c:choose>
+            <c:when test="${fn:contains(pageContext.request.requestURI, '/info/help')}">
+                <span class="disabledLink"><fmt:message key="link.help"/></span>
+            </c:when>
+            <c:otherwise>
+                <c:url var="helpUrl" value="/info/help">
+                    <c:param name="back"
+                        value="${pageContext.request.requestURI}"/>
+                </c:url>
+                <a href="${helpUrl}"><fmt:message key="link.help"/></a>
+            </c:otherwise>
         </c:choose>
     </div>
 
