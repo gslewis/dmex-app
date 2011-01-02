@@ -18,15 +18,6 @@ app.name.gae = dmex-gae
 # Location of the Daisymaths Exercises library source
 #dmex.dir = ../dmex
 
-# GAE deployment properties
-#
-# The default application id
-dmex.gae.app.id.default = dmexgsl
-# The possible application versions
-dmex.gae.app.version.options = prod,test
-# The default application version
-dmex.gae.app.version.default = test
-
 
 ####################
 ### DEPENDENCIES ###
@@ -39,14 +30,17 @@ dmex.gae.app.version.default = test
 # Set the path to the Google AppEngine SDK
 appengine.sdk = /home/gsl/workspace/dmex.extra/appengine-java-sdk
 
+# Set the location of the Tomcat installation.
+# Required for "ant deploy": see Tomcat Deploy section below.
+tomcat.dir = /home/gsl/workspace/dmex.extra/tomcat/apache-tomcat
+
 # Set the "api.jars" property to point to one or more of the compile-time
 # jars: servlet-api.jar, jsp-api.jar and el-api.jar.  See lib/shared/README.
 #
 # Obtain the API jars from the Tomcat install
-_tomcat.dir = /home/gsl/workspace/dmex.extra/tomcat/apache-tomcat
-api.jars = ${_tomcat.dir}/lib/el-api.jar:\
-${_tomcat.dir}/lib/jsp-api.jar:\
-${_tomcat.dir}/lib/servlet-api.jar
+api.jars = ${tomcat.dir}/lib/el-api.jar:\
+${tomcat.dir}/lib/jsp-api.jar:\
+${tomcat.dir}/lib/servlet-api.jar
 #
 # Obtain the API jars from the GAE SDK:
 #api.jars = ${appengine.sdk}/lib/shared/servlet-api.jar:\
@@ -95,5 +89,63 @@ checkstyle.jar = /opt/checkstyle/checkstyle-5.3-all.jar
 
 # Set the path to the JUnit jar for 'ant testcompile' and 'ant test'
 junit.jar = /opt/junit/junit-4.8.1.jar
+
+
+################################
+### Google App Engine Deploy ###
+################################
+#
+# The GAE webapp can be deployed to appspot.com using:
+#
+#   ant -Dapp.run=gae deploy
+#
+# You will be prompted for the application id and version, which will be set
+# in web/gae/WEB-INF/appengine-web.xml.  The default values can be set using
+# the following properties.
+
+# The default application id
+dmex.gae.app.id.default = dmexgsl
+
+# The possible application versions
+dmex.gae.app.version.options = prod,test
+
+# The default application version
+dmex.gae.app.version.default = test
+
+
+#####################
+### Tomcat Deploy ###
+#####################
+# The 'form' and 'pdf' webapps can be deployed to a running Tomcat instance
+# using:
+#
+#   ant -Dapp.run=form deploy
+#   ant -Dapp.run=pdf deploy
+#
+# This requires that the "tomcat.dir" property has been set (see above).
+#
+# You will need to set up a user in the ${tomcat.dir}/conf/tomcat-users.xml
+# configuration file.  The user must have the "manager-script" role (the
+# "manager-gui" role doesn't hurt either).  By default, DMEX expects
+# username="tomcat" and password="tomcat".
+#
+#   <role rolename="manager-gui"/>
+#   <role rolename="manager-script"/>
+#   <user username="tomcat" password="tomcat"
+#               roles="manager-gui,manager-script"/>
+#
+# The 'form' webapp will be deployed to ${tomcat.dir}/webapps/${app.name.form}
+# The 'pdf' webapp will be deployed to ${tomcat.dir}/webapps/${app.name.pdf}
+#
+# The following properties can be set:
+
+# URL of the Tomcat manager 'text' servlet.  Note: in Tomcat 7, the 'text'
+# servlet is at '/manager/text' whereas in Tomcat 6, it is '/manager'.
+#tomcat.manager.url = http://localhost:8080/manager/text
+
+# Tomcat manager username and password (set in conf/tomcat-users.xml).
+#tomcat.manager.username = tomcat
+#tomcat.manager.password = tomcat
+
 
 # vim: ft=jproperties

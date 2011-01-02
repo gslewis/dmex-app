@@ -116,9 +116,40 @@ required jars.
 </target>
 
 <target name="deploy" depends="compile">
-    <fail>Deployment action not implemented for PDF webapp.</fail>
-</target>
+    <fail unless="tomcat.dir" message="Missing 'tomcat.dir' property"/>
 
+    <property name="war.dir" value="${build.dir}/pdf"/>
+
+    <property name="tomcat.manager.url"
+        value="http://localhost:8080/manager/text"/>
+    <property name="tomcat.manager.username" value="tomcat"/>
+    <property name="tomcat.manager.password" value="tomcat"/>
+    <property name="app.name.pdf" value="dmex-pdf"/>
+
+    <taskdef resource="org/apache/catalina/ant/catalina.tasks">
+        <classpath>
+            <fileset dir="${tomcat.dir}/bin">
+                <include name="*.jar"/>
+            </fileset>
+            <fileset dir="${tomcat.dir}/lib">
+                <include name="*.jar"/>
+            </fileset>
+        </classpath>
+    </taskdef>
+
+    <!-- Remove any existing app (don't fail if absent). -->
+    <undeploy url="${tomcat.manager.url}"
+        username="${tomcat.manager.username}"
+        password="${tomcat.manager.password}"
+        path="/${app.name.pdf}"
+        failOnError="false"/>
+
+    <deploy url="${tomcat.manager.url}"
+        username="${tomcat.manager.username}"
+        password="${tomcat.manager.password}"
+        path="/${app.name.pdf}"
+        localWar="file://${war.dir}"/>
+</target>
 
 </project>
 <!-- vim: set ft=ant: -->
