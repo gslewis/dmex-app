@@ -24,7 +24,7 @@ ${info}
 
 <c:choose>
     <c:when test="${param['back'] != null}">
-        <c:url var="backUrl" value="${param['back']}"/>
+        <c:set var="backUrl" value="${param['back']}"/>
     </c:when>
     <c:otherwise>
         <c:url var="backUrl" value="/"/>

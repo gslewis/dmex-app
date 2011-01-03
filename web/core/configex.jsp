@@ -20,7 +20,7 @@
 <body>
 
 <c:url var="infoUrl" value="/info/${eid}">
-    <c:param name="back" value="/config/${eid}"/>
+    <c:param name="back" value="${pageContext.request.requestURI}"/>
 </c:url>
 <h2>
     <fmt:message key="configex.title">

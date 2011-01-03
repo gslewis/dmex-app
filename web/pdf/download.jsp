@@ -26,7 +26,7 @@
 <body>
 
 <c:url var="infoUrl" value="/info/${eid}">
-    <c:param name="back" value="/download/${eid}"/>
+    <c:param name="back" value="${pageContext.request.requestURI}"/>
 </c:url>
 <h2>
     <fmt:message key="download.title">
