@@ -84,6 +84,8 @@ up to each webapp to copy the required jars into its WEB-INF/lib directory.
     <property name="test.dir" value="${build.dir}/test"/>
     <property name="test.reports" value="${basedir}/temp/reports"/>
     <property name="test.temp" value="${basedir}/temp/test"/>
+
+    <available file="test/TEST_LIST" property="test_list"/>
 </target>
 
 <target name="testcompile" depends="test-init,compile"
@@ -121,14 +123,15 @@ up to each webapp to copy the required jars into its WEB-INF/lib directory.
     <mkdir dir="${test.temp}"/>
 
     <patternset id="test.sources">
-        <include name="**/*Test.java"/>
+        <include name="**/*Test.java" unless="test_list"/>
         <exclude name="**/.pasture/**"/>
     </patternset>
 
     <junit printsummary="on" fork="on" forkmode="perTest" maxmemory="128m">
         <jvmarg value="-Dtest.temp=${test.temp}"/>
         <batchtest todir="${test.reports}">
-            <fileset dir="test/form">
+            <fileset dir="test">
+                <includesfile name="test/TEST_LIST" if="test_list"/>
                 <patternset refid="test.sources"/>
             </fileset>
         </batchtest>
