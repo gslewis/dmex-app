@@ -30,6 +30,7 @@ import net.gslsrc.dmex.exercise.ProblemAnswer.ErrorCode;
 import net.gslsrc.dmex.settings.Settings;
 import net.gslsrc.dmex.servlet.DMEXServlet;
 import net.gslsrc.dmex.servlet.InvalidRequestException;
+import net.gslsrc.dmex.servlet.form.demo.Demonstrator;
 import net.gslsrc.dmex.servlet.form.validate.ProblemValidator;
 import static net.gslsrc.dmex.servlet.ConfigServlet.SESSION_ATTR_SETTINGS;
 
@@ -76,6 +77,9 @@ public class ProblemServlet extends DMEXServlet {
     private static final String REQUEST_ATTR_PROBLEM_NUMBER =
             "net.gslsrc.dmex.exercise.Problem.number";
 
+    private static final String REQUEST_ATTR_DEMONSTRATE =
+        "net.gslsrc.dmex.servlet.ProblemServlet.demonstrate";
+
     private static final long serialVersionUID = 2195592764257517753L;
 
     private Properties properties;
@@ -94,6 +98,11 @@ public class ProblemServlet extends DMEXServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
         throws IOException, ServletException {
+
+        if ("demo".equalsIgnoreCase(req.getParameter("action"))) {
+            doDemo(req, resp);
+            return;
+        }
 
         HttpSession session = req.getSession();
 
@@ -247,6 +256,12 @@ public class ProblemServlet extends DMEXServlet {
 
         req.setAttribute(REQUEST_ATTR_JAVASCRIPT_JQUERY, Boolean.TRUE);
 
+        // If there is a demonstrator for this problem, set the flag so we
+        // include the 'Demo' button and the demo javascript.
+        if (Demonstrator.getDemonstrator(problem) != null) {
+            req.setAttribute(REQUEST_ATTR_DEMONSTRATE, Boolean.TRUE);
+        }
+
         Collection<String> resources = getResources(problem,
                                         getServletContext().getContextPath());
         if (resources != null && resources.size() > 0) {
@@ -254,6 +269,34 @@ public class ProblemServlet extends DMEXServlet {
         }
 
         req.getRequestDispatcher("/exsession.jsp").include(req, resp);
+    }
+
+    private void doDemo(HttpServletRequest req, HttpServletResponse resp)
+        throws IOException, ServletException {
+
+        String json = null;
+
+        Problem problem = (Problem)getAttr(req.getSession(),
+                                           SESSION_ATTR_PROBLEM);
+        if (problem != null) {
+            Demonstrator demo = Demonstrator.getDemonstrator(problem);
+
+            if (demo != null) {
+                json = demo.getScript(problem, req.getLocale());
+            }
+        }
+
+        resp.setContentType("text/json");
+
+        if (json == null || json.length() == 0) {
+            resp.setStatus(HttpServletResponse.SC_NO_CONTENT);
+        } else {
+            resp.setStatus(HttpServletResponse.SC_OK);
+            resp.setContentLength(json.length());
+            resp.getWriter().print(json);
+        }
+
+        resp.getWriter().close();
     }
 
     private Collection<String> makeErrors(String eid,

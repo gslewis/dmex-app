@@ -1,0 +1,513 @@
+/*
+Copyright (c) 2011 Geoff Lewis <gsl@gslsrc.net>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+*/
+
+package net.gslsrc.dmex.servlet.form.demo;
+
+import net.gslsrc.dmex.exercise.Problem;
+import net.gslsrc.dmex.exercise.longdiv.LongDivisionProblem;
+import net.gslsrc.dmex.servlet.form.demo.Script.ScriptList;
+import net.gslsrc.dmex.servlet.form.demo.Script.ScriptMap;
+
+import java.util.Locale;
+
+/**
+ * Produces a demonstration script for the {@link LongDivisionProblem}.
+ *
+ * @author Geoff Lewis
+ */
+public class LongDivisionDemonstrator extends Demonstrator {
+
+    public LongDivisionDemonstrator() {}
+
+    public String getScript(Problem problem, Locale locale) {
+        if (problem == null) {
+            throw new NullPointerException("Problem is null");
+        }
+
+        if (!(problem instanceof LongDivisionProblem)) {
+            throw new IllegalArgumentException("Unsupported problem type "
+                    + problem.getClass().getName());
+        }
+
+        Script script = new Script(getResources(locale));
+        script.setIndent(true);
+
+        script.addMap()
+            .setL10n("text", "longdiv.dividend.text")
+            .set("target", "td.dividend")
+            .set("class", "demo-highlight-cell");
+
+        script.addMap()
+            .setL10n("text", "longdiv.divisor.text")
+            .set("target", "td.divisor")
+            .set("class", "demo-highlight-cell");
+
+        script.addMap()
+            .setL10n("text", "longdiv.quotient.text")
+            .set("target", "tr.quotient td.blank input")
+            .set("class", "demo-highlight-input");
+
+        script.addMap()
+            .setL10n("text", "longdiv.remainder.text")
+            .set("target", "table.problem tr.subend:last td.blank input")
+            .set("class", "demo-highlight-input");
+
+        LongDivisionProblem prob = (LongDivisionProblem)problem;
+
+        int quotient = prob.getQuotient();
+        int qlength = String.valueOf(quotient).length();
+
+        int remainder = solveStep(script, prob.getDivisor(),
+                                  prob.getDividend(), prob.getDividend(),
+                                  1, 1, qlength);
+
+        scriptQuotient(script, prob.getQuotient());
+        scriptRemainder(script, remainder);
+
+        return script.toString();
+    }
+
+    /**
+     * Solve a single step of the problem.  This method recursively calls
+     * itself to perform the next step until the running dividend is less than
+     * the divisor, at which point it returns this final running dividend
+     * which is the <i>remainder</i>.
+     * <p>
+     * We need to keep track of the working row (<code>wrow</code>) and the
+     * quotient index (<code>qindex</code>).  If there are no zeros in the
+     * quotient, these indices match.  If there is a zero in the quotient,
+     * there is no working row for that zero.
+     *
+     * @param script the script
+     * @param divisor the problem divisor
+     * @param dividend the full dividend for this step
+     * @param tdiv the target dividend to be used (may discard trailing digits
+     *             of the full dividend)
+     * @param wrow the index of the working row (1-based, top-to-bottom)
+     * @param qindex the index of the quotient digit (1-based, ltr) that
+     *               represents the step
+     * @param qlength the length of the quotient (hence the number of steps)
+     *
+     * @return the next dividend, which is the remainder on the last step
+     */
+    private int solveStep(Script script, int divisor, int dividend, int tdiv,
+            int wrow, int qindex, int qlength) {
+        // If there is a zero in the quotient (found during the "dividend
+        // digits" stage) then we advance a step during this pass.
+        int step = qindex;
+
+        scriptStartStep(script, divisor, tdiv, wrow);
+
+        // Split the dividend into digits.
+        char[] ddigits = String.valueOf(dividend).toCharArray();
+
+        // Index of the i-th digit from the left that we test for
+        // divisibility: we know it must be at least the width of the divisor.
+        int dindex = String.valueOf(divisor).length() - 1;
+
+        // Index of the tr.subend row that contains the dividend for this step
+        // (for step > 1 as first step uses the original dividend).
+        int sindex = wrow > 1 ? getSubendIndex(wrow - 1) : 0;
+
+        System.out.println("step=" + step + " wrow=" + wrow + " dividend=" + dividend + " tdiv=" + tdiv + " divlength=" + ddigits.length);
+
+        // The partial dividend and quotient digit (answer) for pdiv (if any).
+        int pdiv = 0;
+        int pqd = 0;
+        while (dindex < ddigits.length) {
+            pdiv = makeInt(ddigits, dindex);
+            pqd = pdiv / divisor;
+
+            // If the partial dividend could not be divided, then zero entered
+            // in the quotient for the step, and the step will have been
+            // incremented by 1.  We determine the left-shift of the current
+            // quotient step and the left-shift of the right-most digit in the
+            // partial dividend: if they are equal (and not the first step)
+            // then we _must_ enter a digit in the quotient in this step.  If
+            // the partial dividend cannot be divided, then enter a zero in
+            // the quotient.
+
+            int qshift = qlength - step;
+            int dshift = ddigits.length - dindex - 1;
+
+            step = scriptDividendDigits(script, divisor, tdiv, dindex, pdiv,
+                                        pqd, sindex, step, qshift == dshift);
+
+            if (pqd == 0) {
+                ++dindex;
+            } else {
+                break;
+            }
+        }
+
+        scriptQuotientDigit(script, pqd, step);
+
+        // Part product
+        int pp = divisor * pqd;
+        // "bigend" shift (zeros to the right of pp)
+        int beshift = ddigits.length - dindex - 1;
+        // Real part product (with trailing zeros)
+        int realpp = (int)(pp * Math.pow(10, beshift));
+
+        scriptPartProductDigits(script, divisor, pqd, pp, realpp, wrow);
+
+        int[] results = scriptDividendRemain(script, divisor, dividend, realpp,
+                                             wrow, step, qlength);
+
+        // The next dividend: subend = dividend - realpp
+        int subend = results[0];
+        // The partial subend: the smalled fragment of the subend that is
+        // larger than the divisor, hence the target dividend for the next
+        // step.
+        int psdiv = results[1];
+        // The "shift" of the partial subend to the left: or the number of
+        // trailing digits from the subend that are ignored.
+        int seshift = results[2];
+
+        if (subend < divisor) {
+            return subend;
+        }
+
+        int qdiff = beshift - seshift;
+        System.out.println("qdiff=" + qdiff + " beshift=" + beshift + " seshift=" + seshift);
+
+        return solveStep(script, divisor, subend, psdiv, wrow + 1,
+                step + qdiff, qlength);
+    }
+
+    private void scriptQuotient(Script script, int quotient) {
+        script.addMap()
+            .setL10n("text", "longdiv.solve.quotient",
+                     Integer.valueOf(quotient))
+            .set("target", "tr.quotient td.blank input")
+            .set("class", "demo-highlight-input-value");
+    }
+
+    private void scriptRemainder(Script script, int remainder) {
+        script.addMap()
+            .setL10n("text", "longdiv.solve.remainder",
+                     Integer.valueOf(remainder))
+            .set("target", "tr.subend:last td.blank input")
+            .set("class", "demo-highlight-input-value");
+    }
+
+    /**
+     * Script the calculation of the dividend for the next step.  The process
+     * is:
+     *
+     * <ul>
+     * <li>Calculate the full dividend for the next step:
+     * <code>div[n+1]&nbsp;=&nbsp;div[n]&nbsp;-&nbsp;prod[n]</code></li>
+     * <li>Calculate the partial dividend for the next step: working
+     * left-to-right, find the smallest combination of dividend digits that is
+     * larger than the divisor.</li>
+     * <li>Calculate the partial dividend left-shift: represents the number of
+     * trailing digits of the full dividend that are ignored in the next
+     * step.</li>
+     * <li>If the partial dividend does not equal the full dividend, include a
+     * message in the output.</li>
+     * <li>If the full dividend is less than the divisor, we have
+     * finished.</li>
+     * <li>If we have finished but the current step (quotient digit) is not
+     * the last digit in the quotient, then fill out the trailing zeros in the
+     * quotient.</li>
+     * </ul>
+     *
+     * @param script the script
+     * @param divisor the problem divisor
+     * @param prevDividend the previous full dividend
+     * @param lastProd the product from the previous step
+     * @param wrow the working row
+     * @param step the step whose quotient digit we have just calculated
+     * @param steps the number of steps (total number of quotient digits)
+     *
+     * @return an integer array containing: [0]= the full dividend for the
+     *         next step, [1]= the partial dividend for the next step, and
+     *         [2]= the left-shift of the partial dividend
+     */
+    private int[] scriptDividendRemain(Script script, int divisor,
+            int prevDividend, int lastProd, int wrow, int step, int steps) {
+        // The running dividend is obtained by subtracting the last product
+        // (last quotient digit * divisor) from the previous dividend.
+        int subend = prevDividend - lastProd;
+
+        int psdiv = 0;
+        int seshift = 0;
+
+        ScriptMap element = script.addMap();
+
+        ScriptList text = element.addList("text");
+        ScriptList targets = element.addList("targets");
+        ScriptList actions = element.addList("actions");
+
+        text.addL10n("longdiv.solve.remdiv",
+                Integer.valueOf(lastProd),
+                Integer.valueOf(prevDividend),
+                Integer.valueOf(subend));
+
+        String stub = "longdiv_working[" + wrow + "][2]";
+
+        char[] sdigits = String.valueOf(subend).toCharArray();
+        for (int i = 0; i < sdigits.length; ++i) {
+            seshift = sdigits.length - i - 1;
+
+            String name = stub + "[" + (i + 1) + "]";
+            String target = "input[name='" + name + "']";
+
+            targets.addMap()
+                .set("target", target)
+                .set("class", "demo-highlight-input-value");
+
+            actions.addMap()
+                .set("target", target)
+                .set("value", String.valueOf(sdigits[i]));
+
+            psdiv = makeInt(sdigits, i);
+
+            // If the partial dividend exceeds or equals the divisor and does
+            // not represent the complete dividend (seshift > 0) then we can
+            // use the partial dividend in the next step.
+            if (psdiv >= divisor && i < (sdigits.length - 1)) {
+                text.addL10n("longdiv.solve.remdiv.part",
+                        Integer.valueOf(i + 1),
+                        Integer.valueOf(subend),
+                        Integer.valueOf(psdiv),
+                        Integer.valueOf(divisor));
+
+                break;
+            }
+        }
+
+        if (subend < divisor) {
+            text.addL10n("longdiv.solve.remdiv.finish",
+                    Integer.valueOf(subend),
+                    Integer.valueOf(divisor));
+
+            // We have finished by there are still quotient digits remaining:
+            // enter zeros for the remainder.
+            if (step < steps) {
+                text.addL10n("longdiv.solve.remdiv.finish.zeros",
+                        Integer.valueOf(steps - step));
+
+                for (int i = step + 1; i <= steps; ++i) {
+                    String qname = "longdiv_answer[" + i + "]";
+                    String qtarget = "input[name='" + qname + "']";
+
+                    targets.addMap()
+                        .set("target", qtarget)
+                        .set("class", "demo-highlight-input-value");
+
+                    actions.addMap()
+                        .set("target", qtarget)
+                        .set("value", "0");
+                }
+            }
+        }
+
+        return new int[] { subend, psdiv, seshift };
+    }
+
+    private void scriptPartProductDigits(Script script, int divisor, int pqd,
+            int pp, int realpp, int wrow) {
+        ScriptMap element = script.addMap();
+
+        ScriptList text = element.addList("text");
+        text.addL10n("longdiv.solve.partprod",
+                Integer.valueOf(divisor),
+                Integer.valueOf(pqd),
+                Integer.valueOf(pp));
+
+        if (realpp != pp) {
+            text.addL10n("longdiv.solve.partprod.real",
+                         Integer.valueOf(realpp));
+        }
+
+        ScriptList targets = element.addList("targets");
+        ScriptList actions = element.addList("actions");
+
+        String stub = "longdiv_working[" + wrow + "][1]";
+
+        char[] digits = String.valueOf(pp).toCharArray();
+        for (int i = 0; i < digits.length; ++i) {
+            String name = stub + "[" + (i + 1) + "]";
+            String target = "input[name='" + name + "']";
+
+            targets.addMap()
+                .set("target", target)
+                .set("class", "demo-highlight-input-value");
+
+            actions.addMap()
+                .set("target", target)
+                .set("value", String.valueOf(digits[i]));
+        }
+    }
+
+    private void scriptQuotientDigit(Script script, int pqd, int qindex) {
+        String target = "tr.quotient td.blank input[name='longdiv_answer["
+                            + qindex + "]']";
+
+        ScriptMap element = script.addMap();
+
+        element.setL10n("text", "longdiv.solve.quotient.digit",
+                        Integer.valueOf(pqd))
+            .set("target", target)
+            .set("class", "demo-highlight-input-value");
+
+        element.addMap("action")
+            .set("target", target)
+            .set("value", String.valueOf(pqd));
+    }
+
+    // @param answerCol if true then the right-most column of the partial
+    // dividend (pdiv) corresponds to an answer column in the quotient so if
+    // we cannot divide pdiv by the divisor, put a zero in the quotient.
+    // sindex: child index of tr.subend containing the dividend (for step > 1)
+    private int scriptDividendDigits(Script script, int divisor,
+            int dividend, int dindex, int pdiv, int pqd, int sindex, int step,
+            boolean answerCol) {
+        ScriptMap element = script.addMap();
+        ScriptList text = element.addList("text")
+            .addL10n("longdiv.solve.lookdiv.1",
+                     Integer.valueOf(dindex + 1), Integer.valueOf(dividend))
+            .addL10n("longdiv.solve.lookdiv.2",
+                     Integer.valueOf(pdiv), Integer.valueOf(divisor));
+
+        boolean quotientZero = false;
+
+        if (pqd == 0) {
+            text.addL10n("longdiv.solve.lookdiv.no");
+
+            // If we could not divide this partial dividend AND we are not on
+            // the first step (don't do leading zeros) AND the column of the
+            // right-most digit in the partial dividend (dindex) matches the
+            // step, THEN put a zero in the quotient for the step and
+            // increment the step on return.
+
+            if (step > 1 && answerCol) {
+                text.addL10n("longdiv.solve.lookdiv.no.zero");
+                quotientZero = true;
+            }
+        } else {
+            text.addL10n("longdiv.solve.lookdiv.yes",
+                    Integer.valueOf(pqd),
+                    Integer.valueOf(divisor), Integer.valueOf(pdiv));
+        }
+
+        ScriptList targets = element.addList("targets");
+        if (step == 1) {
+            for (int i = 0; i <= dindex; ++i) {
+                // The :nth-child selector is 1-based so add 1 to 'i'.
+                // There are two preceding <td>s in the divisor <tr> so add
+                // another 2.
+                targets.addMap()
+                    .set("target",
+                         "tr.divisor td.dividend:nth-child(" + (i + 3) + ")")
+                    .set("class", "demo-highlight-cell");
+            }
+        } else {
+            String stub = "tr.subend:nth-child(" + sindex + ")";
+            for (int i = 0; i <= dindex; ++i) {
+                // The subend <tr> has one leading <td> with padding (or
+                // remainder label), so add an extra 1.
+                targets.addMap()
+                    .set("target",
+                         stub + " td.blank:nth-child(" + (i + 2) + ") input")
+                    .set("class", "demo-highlight-input");
+            }
+        }
+
+        if (quotientZero) {
+            String qname = "longdiv_answer[" + step + "]";
+            String qtarget = "input[name='" + qname + "']";
+
+            targets.addMap()
+                .set("target", qtarget)
+                .set("class", "demo-highlight-input-value");
+
+            element.addList("actions").addMap()
+                .set("target", qtarget)
+                .set("value", "0");
+
+            return step + 1;
+        }
+
+        return step;
+    }
+
+    private void scriptStartStep(Script script, int divisor, int dividend,
+            int wrow) {
+        ScriptMap element = script.addMap()
+            .setL10n("text", "longdiv.solve.dividing",
+                     Integer.valueOf(dividend), Integer.valueOf(divisor));
+
+        ScriptList list = element.addList("targets");
+        list.addMap()
+            .set("target", "tr.divisor td.divisor")
+            .set("class", "demo-highlight-cell");
+
+        if (wrow == 1) {
+            list.addMap()
+                .set("target", "tr.divisor td.dividend")
+                .set("class", "demo-highlight-cell");
+        } else {
+            int sindex = getSubendIndex(wrow - 1);
+            list.addMap()
+                .set("target",
+                     "tr.subend:nth-child(" + sindex + ") td.blank input")
+                .set("class", "demo-highlight-input");
+        }
+    }
+
+    // step=2 => wrow=1; step=3 => wrow=2; etc.
+    // tbody is parent:
+    //   1: tr.quotient
+    //   2: tr.rule
+    //   3: tr.divisor
+    //   3*step + 1: tr.bigend
+    //   3*step + 2: tr.rule
+    //   3*step + 3: tr.subend
+
+    // For step S, the subend of interest belongs to S-1
+    // Child index of the step-th tr.subend.
+    private int getSubendIndex(int step) {
+        return 3 * step + 3;
+    }
+
+    /**
+     * Combine digits to make a number.  We combine starting from the left
+     * (zero-th) digit up to and including the i-th digit (given by the index
+     * parameter).
+     *
+     * @param digits the complete array of digits
+     * @param index the index of the i-th digit to be combined (right-most)
+     *
+     * @return the combined digits as an integer
+     */
+    private int makeInt(char[] digits, int index) {
+        String s = "";
+        for (int i = 0; i <= index; ++i) {
+            s += digits[i];
+        }
+
+        return Integer.parseInt(s);
+    }
+}

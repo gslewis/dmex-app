@@ -55,7 +55,7 @@ public abstract class DMEXServlet extends HttpServlet {
      * Servlet context attribute that contains the {@link ExerciseList}.  This
      * attribute is read-only and it set by the webapp's
      * {@link DMEXContextListener} implementation.  As this attribute is used
-     * by a {@code <jsp:useBean> tag, it can't contain periods.
+     * by a {@code <jsp:useBean>} tag, it can't contain periods.
      */
     public static final String CONTEXT_ATTR_EXLIST = "exlist";
 

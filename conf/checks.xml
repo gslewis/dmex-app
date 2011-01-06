@@ -198,9 +198,11 @@
             <property name="classes" value="java.lang.Boolean"/>
         </module>
         <module name="InnerAssignment"/>
+        <!--
         <module name="MagicNumber">
             <property name="ignoreHashCodeMethod" value="true"/>
         </module>
+        -->
         <module name="MissingSwitchDefault"/>
         <module name="DefaultComesLast"/>
         <module name="RedundantThrows">

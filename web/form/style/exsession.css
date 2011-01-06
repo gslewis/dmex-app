@@ -9,3 +9,64 @@ div.errors ul {
     list-style: none;
     padding-left: 1em;
 }
+
+input.demoButton {
+    display: block;
+    margin-top: 30px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 60px;
+}
+
+.overlay {
+    background: transparent;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+}
+
+.overlay div.demo {
+    position: relative;
+    border: 2px solid gray;
+    background-color: #EEE;
+    color: black;
+    width: 360px;
+}
+
+.overlay div.demo input.closeButton {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.overlay div.demo input.nextButton {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.overlay div.demo div.demo-text {
+    margin-top: 26px;
+    margin-bottom: 10px;
+    border-top: 3px double gray;
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.demo-highlight-cell {
+    background-color: #ffa7a7;
+}
+
+.demo-highlight-input {
+    background-color: #ffa7a7;
+}
+
+.demo-highlight-input-value {
+    background-color: #DDD;
+    color: red;
+    font-weight: bold;
+}

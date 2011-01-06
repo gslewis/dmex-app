@@ -11,6 +11,7 @@
     <c:redirect url="/"/>
 </c:if>
 <c:set var="eid" value="${exsession.exerciseId}"/>
+<c:set var="demonstrate" value="${requestScope['net.gslsrc.dmex.servlet.ProblemServlet.demonstrate']}"/>
 
 <html>
 <head>
@@ -21,6 +22,10 @@
 
 <c:url var="numpadJS" value="/javascript/numpad.js"/>
 <script type="text/javascript" src="${numpadJS}"></script>
+<c:if test="${demonstrate == true}">
+    <c:url var="demonstrateJS" value="/javascript/demonstrate.js"/>
+    <script type="text/javascript" src="${demonstrateJS}"></script>
+</c:if>
 
 <%@ include file="/WEB-INF/template/stylesheets.jsp" %>
 <c:url var="exsessionCss" value="/style/exsession.css"/>
@@ -35,6 +40,11 @@
 
 <div id="leftcol">
 <%@ include file="/WEB-INF/template/numpad.html" %>
+<c:if test="${demonstrate == true}">
+<input class='demoButton' type='button'
+    value="<fmt:message key='button.demo'/>"
+    onclick='demonstrate(this)'/>
+</c:if>
 </div>
 
 <div id="maincol">
