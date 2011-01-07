@@ -47,7 +47,9 @@
     <%-- This template is copied with filtering to set the version and build
     values. --%>
     <div id="footerInfo">
-        <span class="version">Version: @version@</span> <span class="build">[@build@]</span>
+        <span class="version">Version: @version@</span> <span class="build">[@build@]</span><br/>
+        <span class="server">${pageContext.servletContext.serverInfo}</span>
+
     </div>
 </div>
 </body>
