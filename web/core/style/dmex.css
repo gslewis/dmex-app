@@ -3,7 +3,10 @@ body {
 }
 
 #footer {
+    clear: both;
     width: 100%;
+    border-top: 2px solid #ddd;
+    padding-top: 6px;
 }   
 
 #footerLinks {
@@ -13,7 +16,7 @@ body {
 
 #footerInfo {
     text-align: right;
-    color: #bbbbbb;
+    color: #999;
     font-size: 10pt;
 }  
 

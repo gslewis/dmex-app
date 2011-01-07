@@ -1,0 +1,33 @@
+div#text-content {
+    border-top: 2px solid #ddd;
+}
+
+div#text-content div {
+    margin-top: 10px;
+}
+
+div#intro {
+    float: left;
+    width: 60%;
+    margin-bottom: 10px;
+}
+
+div#news {
+    float: right;
+    width: 35%;
+    padding-left: 6px;
+    padding-right: 6px;
+    margin-bottom: 10px;
+    background-color: #eee;
+    border: 3px double gray;
+}
+
+p.signature {
+    font-style: italic;
+    margin-top: 1.2em;
+}
+
+span.news-date {
+    font-style: italic;
+    padding-right: 6px;
+}

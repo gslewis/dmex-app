@@ -14,8 +14,6 @@
 <c:url var="homeUrl" value="/"/>
 
 <div id="footer">
-    <hr/>
-
     <div id="footerLinks">
         <a href="${homeUrl}">home</a> |
         <%-- Disable 'about' link if on 'about' page. --%>
