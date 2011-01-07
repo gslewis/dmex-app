@@ -31,14 +31,21 @@ body {
 
 div.buttons {
     width: 300px;
+    position: relative;
 }
 
 div.buttons input {
     width: 60px;
 }
 
-div.buttons span.other {
-    float: right;
+div.buttons span.leftButtons {
+    position: absolute;
+    left: 0;
+}
+
+div.buttons span.rightButtons {
+    position: absolute;
+    right: 0;
 }
 
 h2 span.infoLink {

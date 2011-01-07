@@ -51,14 +51,16 @@
 </ul>
 
 <div class="buttons">
-    <c:url var="backUrl" value="/problem/${eid}"/>
-    <input type="button" value='<fmt:message key="button.back"/>'
-        onclick='location.href="${backUrl}"'/>
-    <c:url var="refreshUrl" value="/download/${eid}"/>
-    <input type="button" value='<fmt:message key="button.refresh"/>'
-        onclick='location.href="${refreshUrl}"'/>
+    <span class="leftButtons">
+        <c:url var="backUrl" value="/problem/${eid}"/>
+        <input type="button" value='<fmt:message key="button.back"/>'
+            onclick='location.href="${backUrl}"'/>
+        <c:url var="refreshUrl" value="/download/${eid}"/>
+        <input type="button" value='<fmt:message key="button.refresh"/>'
+            onclick='location.href="${refreshUrl}"'/>
+    </span>
 
-    <span class="other">
+    <span class="rightButtons">
         <c:url var="finishUrl" value="/"/>
         <input type="button" value='<fmt:message key="button.finish"/>'
             onclick='location.href="${finishUrl}"'/>

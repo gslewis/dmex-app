@@ -51,9 +51,11 @@
     </div>
 
     <div class="buttons">
-        <input type='button' value='<fmt:message key="button.next"/>'
-            onclick='location.href="${pageContext.servletContext.contextPath}/problem/${eid}"'/>
-        <span class="other">
+        <span class="leftButtons">
+            <input type='button' value='<fmt:message key="button.next"/>'
+                onclick='location.href="${pageContext.servletContext.contextPath}/problem/${eid}"'/>
+        </span>
+        <span class="rightButtons">
             <input type='button' value='<fmt:message key="button.finish"/>'
                 onclick='location.href="${pageContext.servletContext.contextPath}/finish/${eid}"'/>
         </span>

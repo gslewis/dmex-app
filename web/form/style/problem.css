@@ -17,6 +17,7 @@
     width: 320px;
     border-top: 4px solid #cccccc;
     margin-top: 10px;
+    margin-bottom: 35px; /* Includes button height. */
     padding-top: 4px;
 }
 

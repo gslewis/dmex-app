@@ -72,8 +72,10 @@
     </div>
 
     <div class="buttons">
-        <input type='submit' value='<fmt:message key="button.submit"/>'/>
-        <span class="other">
+        <span class="leftButtons">
+            <input type='submit' value='<fmt:message key="button.submit"/>'/>
+        </span>
+        <span class="rightButtons">
             <input type='button' value='<fmt:message key="button.skip"/>'
                 onclick='location.href="${pageContext.servletContext.contextPath}/problem/${eid}"'/>
             <input type='button' value='<fmt:message key="button.show"/>'
