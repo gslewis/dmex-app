@@ -4,27 +4,23 @@
  * Makes an ajax call to http://<host>/problem/<eid>?action=demo
  * Receives a JSON-format solution script.
  */
-function demonstrate(button) {
-    var xmlhttp = new XMLHttpRequest();
-    var url = location.href + '?action=demo';
-    xmlhttp.open('GET', url, true);
-
-    xmlhttp.onreadystatechange=function() {
-        if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
-            var demolist = eval('(' + xmlhttp.responseText + ')');
-
-            if (demolist.length > 0) {
+function demonstrate(eid) {
+    $.ajax({
+        url: eid + '?action=demo',
+        type: 'GET',
+        cache: false,
+        dataType: 'json',
+        success: function(data) {
+            if (data.length > 0) {
                 var overlay = document.createElement("div");
                 overlay.setAttribute("id", "overlay");
                 overlay.setAttribute("class", "overlay");
                 document.body.appendChild(overlay);
 
-                showDemo(overlay, demolist, 0);
+                showDemo(overlay, data, 0);
             }
         }
-    };
-
-    xmlhttp.send(null);
+    });
 }
 
 function showDemo(overlay, demolist, index) {
@@ -39,7 +35,7 @@ function showDemo(overlay, demolist, index) {
     // the start of the step and removed at the end of the step.
     var targets = null;
     if ('target' in entry) {
-        targets = [ { target: entry.target, class: entry.class } ];
+        targets = [ { "target": entry.target, "class": entry['class'] } ];
     } else if ('targets' in entry) {
         targets = entry.targets;
     }
@@ -52,7 +48,7 @@ function showDemo(overlay, demolist, index) {
     } else if ('actions' in entry) {
         actions = entry.actions;
     } else if ('value' in entry && 'target' in entry) {
-        actions = [ { target: entry.target, value: entry.value } ];
+        actions = [ { "target": entry.target, "value": entry.value } ];
     }
 
     var content = document.createElement("div");
@@ -99,7 +95,7 @@ function doTargets(targets, action) {
     var i;
     for (i = 0; i < targets.length; ++i) {
         var target = $(targets[i].target);
-        var targetCls = targets[i].class;
+        var targetCls = targets[i]['class'];
 
         if (target) {
             if (action == 'addClass') {
@@ -159,7 +155,7 @@ function closeDemo(overlay, targets) {
     if (targets) {
         var i;
         for (i = 0; i < targets.length; ++i) {
-            $(targets[i].target).removeClass(targets[i].class);
+            $(targets[i].target).removeClass(targets[i]['class']);
         }
     }
 

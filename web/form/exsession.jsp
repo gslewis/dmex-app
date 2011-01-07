@@ -43,7 +43,7 @@
 <c:if test="${demonstrate == true}">
 <input class='demoButton' type='button'
     value="<fmt:message key='button.demo'/>"
-    onclick='demonstrate(this)'/>
+    onclick="demonstrate('${eid}')"/>
 </c:if>
 </div>
 
@@ -59,7 +59,7 @@
         </fmt:param>
     </fmt:message>
     <span class="infoLink">
-        [<a href="${infoUrl}"><fmt:message key="dmex.info"/><a>]
+        [<a href="${infoUrl}"><fmt:message key="dmex.info"/></a>]
     </span>
 </h2>
 
