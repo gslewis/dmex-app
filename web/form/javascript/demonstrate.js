@@ -5,6 +5,11 @@
  * Receives a JSON-format solution script.
  */
 function demonstrate(eid) {
+    // Opera doesn't block mouse-clicks on the overlay.
+    if ($("#overlay").length) {
+        return;
+    }
+
     $.ajax({
         url: eid + '?action=demo',
         type: 'GET',
