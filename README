@@ -14,8 +14,12 @@ This project requires the Daisymaths Exercises library:
 
 Building
 --------
-Requires Java 1.6.  The webapps are built using Apache Ant (tested with
-Ant 1.8.1).  Use 'ant -projecthelp' to see a list of available targets.
+Requires Java 1.6.
+
+Requires jQuery lib to be placed in web/core/javascript (see jQuery below).
+
+The webapps are built using Apache Ant (tested with Ant 1.8.1).
+Use 'ant -projecthelp' to see a list of available targets.
 
 The main targets are:
 
@@ -64,6 +68,24 @@ GAE-only (see lib/gae/README, build property "gae.jars")
 
 Note: for the 'pdf' webapp, all jar dependencies are handled via the DMEX PDF
 module using the ${dmex.dir}/src/pdf/build-module.xml '-installjars' target.
+
+jQuery
+------
+All versions of the webapp require the jQuery javascript library which is not
+included in the project.  You should download the latest version from
+http://jquery.com/ and place it in the web/core/javascript directory.
+
+By default, the webapps expect the jQuery file to be called "jquery.js".  If
+you do not rename the file, set the "jquery.lib" property in your
+build.properties file to match the name you are using.  Don't include the path
+in "jquery.lib".
+
+For example, if you install jquery-1.4.4.min.js in web/core/javascript, set
+the property:
+
+    jquery.lib = jquery-1.4.4.min.js
+
+in your build.properties file.
 
 
 Jetty

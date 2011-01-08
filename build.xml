@@ -19,6 +19,13 @@
 <property name="build.dir" location="build"/>
 <property name="dist.dir" location="dist"/>
 
+<!--
+Name of the jQuery file in ${web.dir}/core/javascript.
+This value is a filter token applied to web/core/WEB-INF/template/scripts.jsp
+See src/core/build-webapp.xml.
+-->
+<property name="jquery.lib" value="jquery.js"/>
+
 <!-- List of webapps to be built.  Override in the build.properties file. -->
 <property name="app.includes" value="form pdf gae"/>
 
@@ -43,8 +50,9 @@ See ${lib.dir}/shared/README.
     <pathelement path="${api.jars}"/>
 </path>
 
-<target name="compile" depends="-dmex"
+<target name="compile" depends="-jquery,-dmex"
     description="Compiles all the webapp wars to ${dist.dir}">
+
     <mkdir dir="${dist.dir}"/>
 
     <subant inheritRefs="true" inheritAll="true" antfile="build-webapp.xml">
@@ -52,6 +60,23 @@ See ${lib.dir}/shared/README.
         <property name="TODAY" value="${TODAY}"/>
         <dirset dir="src" includes="${app.includes}"/>
     </subant>
+</target>
+
+<!-- Check the jQuery library is in ${web.dir}/core/javascript. -->
+<target name="-jquery">
+    <fail message="Please set the jquery.lib property">
+        <condition>
+            <not><isset property="jquery.lib"/></not>
+        </condition>
+    </fail>
+
+    <fail message="Please place your ${jquery.lib} file in ${web.dir}/core/javascript">
+        <condition>
+            <not>
+                <available file="${web.dir}/core/javascript/${jquery.lib}"/>
+            </not>
+        </condition>
+    </fail>
 </target>
 
 <!--

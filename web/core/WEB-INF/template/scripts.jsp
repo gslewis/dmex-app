@@ -5,7 +5,7 @@
 
 <c:set var="jquery" value="${requestScope['net.gslsrc.dmex.servlet.javascript.jquery']}"/>
 <c:if test="${jquery == null or jquery == true}">
-<script type="text/javascript" src="${pageContext.servletContext.contextPath}/javascript/jquery.js"></script>
+<script type="text/javascript" src="${pageContext.servletContext.contextPath}/javascript/@JQUERY@"></script>
 </c:if>
 
 <c:set var="scripts" value="${requestScope['net.gslsrc.dmex.servlet.resources']}"/>

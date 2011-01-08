@@ -18,6 +18,9 @@ app.name.gae = dmex-gae
 # Location of the Daisymaths Exercises library source
 #dmex.dir = ../dmex
 
+# Name of the jQuery lib located in ${web.dir}/core/javascript.
+# Default value is: jquery.js
+#jquery.lib = jquery-1.4.4.min.js
 
 ####################
 ### DEPENDENCIES ###

@@ -1,6 +1,14 @@
 <project name="dmex-app-pdf" default="dist">
 <description>DMEX webapp for PDF work sheet generation</description>
 
+<patternset id="src-excludes">
+    <exclude name="CHECK_LIST"/>
+    <exclude name="**/.*.swp"/>
+    <exclude name="**/*.java"/>
+    <exclude name="**/.pasture/**"/>
+    <exclude name="build-webapp.xml"/>
+</patternset>
+
 <target name="prepare">
     <property name="war.dir" value="${build.dir}/pdf"/>
 
@@ -8,24 +16,17 @@
     <mkdir dir="${war.dir}/WEB-INF"/>
     <mkdir dir="${war.dir}/WEB-INF/lib"/>
 
-    <!-- Two copies: One with no filtering for most resources, one with
-    filtering with explicit files to be filtered. -->
+    <!-- Copies the common webapp content to ${war.dir}. -->
+    <ant antfile="${basedir}/src/core/build-webapp.xml" target="prepare-core"
+        inheritAll="true" inheritRefs="true">
+        <property name="war.dir" value="${war.dir}"/>
+    </ant>
+
     <copy todir="${war.dir}">
-        <fileset dir="${web.dir}/core">
-            <exclude name="WEB-INF/template/footer.jspf"/>
-            <exclude name="**/.pasture/**"/>
-            <exclude name="**/.*.swp"/>
-        </fileset>
         <fileset dir="${web.dir}/pdf">
             <exclude name="**/.pasture/**"/>
             <exclude name="**/.*.swp"/>
         </fileset>
-    </copy>
-    <copy todir="${war.dir}">
-        <fileset dir="${web.dir}/core">
-            <include name="WEB-INF/template/footer.jspf"/>
-        </fileset>
-        <filterset refid="release-tokens"/>
     </copy>
 
     <property name="runtime.jars" value=""/>
@@ -71,18 +72,10 @@
     <!-- filtered copy -->
     <copy todir="${war.dir}/WEB-INF/classes">
         <fileset dir="${basedir}/src/core">
-            <exclude name="CHECK_LIST"/>
-            <exclude name="**/.*.swp"/>
-            <exclude name="**/*.java"/>
-            <exclude name="**/.pasture/**"/>
-            <exclude name="build-webapp.xml"/>
+            <patternset refid="src-excludes"/>
         </fileset>
         <fileset dir="${basedir}/src/pdf">
-            <exclude name="CHECK_LIST"/>
-            <exclude name="**/.*.swp"/>
-            <exclude name="**/*.java"/>
-            <exclude name="**/.pasture/**"/>
-            <exclude name="build-webapp.xml"/>
+            <patternset refid="src-excludes"/>
         </fileset>
     </copy>
 </target>

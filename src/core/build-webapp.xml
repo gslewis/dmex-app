@@ -1,0 +1,42 @@
+<project name="dmex-app-core" default="error">
+<description>
+    DMEX core webapp components.  These targets should not be called directly
+    but rather from the non-core webapp modules.
+</description>
+
+<target name="error">
+    <fail>This build file should be invoked via the modules.</fail>
+</target>
+
+<target name="prepare-core">
+    <fail unless="war.dir" message="Missing ${war.dir} property"/>
+
+    <available property="war.dir.exists" file="${war.dir}" type="dir"/>
+    <fail unless="${war.dir.exists}" message="${war.dir} does not exist"/>
+
+    <patternset id="filtered.resources">
+        <include name="WEB-INF/template/footer.jspf"/>
+        <include name="WEB-INF/template/scripts.jsp"/>
+    </patternset>
+
+    <!-- Two copies: One with no filtering that copies everything, the second
+    with filtering that copies specific files. -->
+    <copy todir="${war.dir}">
+        <fileset dir="${web.dir}/core">
+            <exclude name="**/.pasture/**"/>
+            <exclude name="**/.*.swp"/>
+        </fileset>
+    </copy>
+    <copy todir="${war.dir}" overwrite="true">
+        <fileset dir="${web.dir}/core">
+            <patternset refid="filtered.resources"/>
+        </fileset>
+        <filterset refid="release-tokens"/>
+        <filterset>
+            <filter token="JQUERY" value="${jquery.lib}"/>
+        </filterset>
+    </copy>
+</target>
+
+</project>
+<!-- vim: set ft=ant: -->
