@@ -38,6 +38,7 @@
 
 <body>
 
+<div id="worksheet">
 <div id="leftcol">
 <%@ include file="/WEB-INF/template/numpad.html" %>
 <c:if test="${demonstrate == true}">
@@ -100,6 +101,8 @@
 
 <%@ include file="/WEB-INF/template/bottomPanel.jsp" %>
 
-</div>
+</div> <!-- maincol -->
+<div style="clear: both;"/>
+</div> <!-- worksheet -->
 
 <%@ include file="/WEB-INF/template/footer.jspf" %>

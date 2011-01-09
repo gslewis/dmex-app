@@ -1,15 +1,16 @@
 /* Layout for pages the render a problem.  Used by both exsession.jsp and
  * show.jsp.
  */
+#worksheet {}
+
 #maincol {
-    margin-left: 170px;
+    float: left;
     padding-left: 25px;
 }
 
 #leftcol {
-    position: absolute;
-    left: 40px;
-    top: 80px;
+    float: left;
+    padding-top: 80px;
     width: 170px;
 }
 

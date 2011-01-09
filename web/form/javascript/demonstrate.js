@@ -128,7 +128,12 @@ function doActions(actions) {
 }
 
 function doLayout(content) {
-    var pc = $("div#problemContainer");
+    // Try to position relative to the problem (assumes
+    // <table class="problem">) else relative to the container.
+    var pc = $("div#problemContainer > table.problem");
+    if (pc.length == 0) {
+        pc = $("div#problemContainer");
+    }
 
     var vw = $(window).width();
     var pco = pc.offset();

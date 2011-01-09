@@ -1,15 +1,7 @@
 #problemContainer {
     display: table-cell;
     vertical-align: middle;
-    /*border: 1px solid blue;*/
-}
-
-#problemContainer div.hintsBlock {
-    float: right;
-    margin-top:  6px;
-    margin-left: 20px;
-    margin-right: 10px;
-    border: 1px solid cyan;
+    width: 500px;
 }
 
 #problemContainer table.problem {
@@ -67,8 +59,22 @@
 }
 
 /* Hints are hidden by default */
+#problemContainer div.hintsBlock {
+    float: left;
+    margin-top:  6px;
+    margin-left: 20px;
+    margin-right: 10px;
+}
+
+#problemContainer div.hintsBlock input {
+    width: 80px;
+}
+
 #problemContainer div.hintsContainer {
     display: none;
+    margin-top: -3px;
+    border: 3px double gray;
+    background-color: #eee;
 }
 
 #problemContainer div.hintsContainer ul {
